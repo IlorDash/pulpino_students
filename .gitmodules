@@ -67,3 +67,6 @@
 [submodule "submodules/fpu"]
 	path = submodules/fpu
 	url = https://github.com/pulp-platform/fpu.git
+[submodule "submodules/ibex"]
+	path = submodules/ibex
+	url = https://github.com/Konf/ibex.git

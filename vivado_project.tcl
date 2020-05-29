@@ -236,25 +236,26 @@ set files [list \
  [file normalize "${origin_dir}/submodules/axi/axi_spi_slave/spi_slave_syncro.sv"] \
  [file normalize "${origin_dir}/submodules/axi/axi_spi_slave/spi_slave_tx.sv"] \
  [file normalize "${origin_dir}/submodules/apb/apb_timer/timer.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/include/zeroriscy_defines.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/include/zeroriscy_config.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_alu.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_compressed_decoder.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_controller.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_core.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_cs_registers.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_debug_unit.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_decoder.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_ex_block.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_fetch_fifo.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_id_stage.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_if_stage.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_int_controller.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_load_store_unit.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_multdiv_fast.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_multdiv_slow.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_prefetch_buffer.sv"] \
- [file normalize "${origin_dir}/submodules/zero-riscy/zeroriscy_register_file_ff.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/include/zeroriscy_defines.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/include/zeroriscy_config.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_alu.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_compressed_decoder.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_controller.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_core.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_cs_registers.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_debug_unit.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_decoder.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_ex_block.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_fetch_fifo.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_id_stage.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_if_stage.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_int_controller.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_load_store_unit.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_multdiv_fast.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_multdiv_slow.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_prefetch_buffer.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/zeroriscy_register_file_ff.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/custom0_stub.sv"] \
  [file normalize "${origin_dir}/submodules/apb/apb_uart/apb_uart.vhd"] \
  [file normalize "${origin_dir}/submodules/apb/apb_uart/slib_clock_div.vhd"] \
  [file normalize "${origin_dir}/submodules/apb/apb_uart/slib_counter.vhd"] \
@@ -778,97 +779,102 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/include/zeroriscy_defines.sv"
+set file "$origin_dir/submodules/ibex/include/zeroriscy_defines.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/include/zeroriscy_config.sv"
+set file "$origin_dir/submodules/ibex/include/zeroriscy_config.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Verilog Header" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_alu.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_alu.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_compressed_decoder.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_compressed_decoder.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_controller.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_controller.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_core.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_core.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_cs_registers.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_cs_registers.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_debug_unit.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_debug_unit.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_decoder.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_decoder.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_ex_block.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_ex_block.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_fetch_fifo.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_fetch_fifo.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_id_stage.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_id_stage.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_if_stage.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_if_stage.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_int_controller.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_int_controller.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_load_store_unit.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_load_store_unit.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_multdiv_fast.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_multdiv_fast.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_multdiv_slow.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_multdiv_slow.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_prefetch_buffer.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_prefetch_buffer.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/zero-riscy/zeroriscy_register_file_ff.sv"
+set file "$origin_dir/submodules/ibex/zeroriscy_register_file_ff.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/submodules/ibex/custom0_stub.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
