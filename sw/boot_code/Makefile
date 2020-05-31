@@ -13,6 +13,8 @@ DFLAGS  =
 
 ARCH = -march=rv32imc -mabi=ilp32
 
+OFLAGS = -O2
+
 # Board support
 BSP           = \ #board_support
 
@@ -45,7 +47,7 @@ all: clean bootable dat_boot
 .PHONY: bootable
 bootable: $(OUTPUT)
 $(OUTPUT): $(LDS_BOOT) $(EMB_OBJS) $(OBJS)
-	${CC} ${ARCH} $(BOARD_INCLUDE:%=-I%) $(BOOT_INCLUDE:%=-I%) -flto -O3 -Wl,--gc-sections -o $(OUTPUT).elf $(EMB_OBJS) -nostartfiles $(OBJS) -lm -T $(LDS_BOOT) -lc
+	${CC} ${ARCH} $(BOARD_INCLUDE:%=-I%) $(BOOT_INCLUDE:%=-I%) -flto ${OFLAGS} -Wl,--gc-sections -o $(OUTPUT).elf $(EMB_OBJS) -nostartfiles $(OBJS) -lm -T $(LDS_BOOT) -lc
 	${OBJCOPY} -O binary $(OUTPUT).elf $(OUTPUT).bin
 	${OBJDUMP} -D $(OUTPUT).elf > disasm_boot.S
 	$(SIZE) $(OUTPUT).elf
@@ -65,7 +67,7 @@ clean:
 
 
 %.o:	%.S
-	${CC} ${ARCH} $(BOARD_INCLUDE:%=-I%) -c $^ -o $@
+	${CC} ${ARCH} ${OFLAGS} $(BOARD_INCLUDE:%=-I%) -c $^ -o $@
 
 %.o:	%.c
-	${CC} ${ARCH} $(DFLAGS) $(BOARD_INCLUDE:%=-I%) $(BOOT_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) $(GDBDEBUG) -c $^ -o $@
+	${CC} ${ARCH} ${OFLAGS} $(DFLAGS) $(BOARD_INCLUDE:%=-I%) $(BOOT_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) $(GDBDEBUG) -c $^ -o $@

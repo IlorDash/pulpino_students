@@ -13,6 +13,8 @@ DFLAGS  =
 
 ARCH = -march=rv32imc -mabi=ilp32
 
+OFLAGS = -O2
+
 # Board support
 BSP           = \ #board_support
 
@@ -50,7 +52,7 @@ all: clean embedded dat
 .PHONY: embedded
 embedded: $(OUTPUT_EMB)
 $(OUTPUT_EMB): $(LDS_EMB) $(EMB_OBJS) $(OBJS) $(OUTPUT_OBJ)
-	${CC} ${ARCH} $(BOARD_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) -flto -O2 -Wl,--gc-sections -o $(OUTPUT_EMB).elf $(EMB_OBJS) -nostartfiles $(OBJS) $(OUTPUT_OBJ) -lm -T $(LDS_EMB) -lc
+	${CC} ${ARCH} $(BOARD_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) -flto ${OFLAGS} -Wl,--gc-sections -o $(OUTPUT_EMB).elf $(EMB_OBJS) -nostartfiles $(OBJS) $(OUTPUT_OBJ) -lm -T $(LDS_EMB) -lc
 	${OBJCOPY} -O binary $(OUTPUT_EMB).elf $(OUTPUT_EMB).bin
 	${OBJDUMP} -D $(OUTPUT_EMB).elf > disasm_emb.S
 	$(SIZE) $(OUTPUT_EMB).elf
@@ -73,7 +75,7 @@ clean:
 	rm -f disasm_debug.S disasm_emb.S
 
 %.o:	%.S
-	${CC} ${ARCH} $(BOARD_INCLUDE:%=-I%) -c $^ -o $@
+	${CC} ${ARCH} ${OFLAGS} $(BOARD_INCLUDE:%=-I%) -c $^ -o $@
 
 %.o:	%.c
-	${CC} ${ARCH} $(DFLAGS) $(BOARD_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) $(GDBDEBUG) -c $^ -o $@
+	${CC} ${ARCH} ${OFLAGS} $(DFLAGS) $(BOARD_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) $(GDBDEBUG) -c $^ -o $@
