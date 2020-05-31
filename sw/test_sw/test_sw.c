@@ -3,14 +3,15 @@
 #define LED_DELAY 1000000
 
 //#include <spi.h>
-#include <gpio.h>
-#include <uart.h>
+//#include <gpio.h>
+//#include <uart.h>
 //#include <utils.h>
-#include <pulpino.h>
+//#include <pulpino.h>
 
 
 int main()
 {
+/*
   uart_set_cfg(0, 325); // 9600 baud UART, np parity (50MHz CPU)
 
   uart_send("Hello world!\n", 13); // 13 is a number of chars sent: 12 + "\n" 
@@ -47,4 +48,35 @@ int main()
     set_gpio_pin_value(11, 0);
     
   }
+
+*/
+
+
+/*
+  asm volatile
+  (
+    "addi x2, x0, 0xa\n\t"
+    "addi x3, x0, 0xb\n\t"
+    "addi x4, x0, 0xc\n\t"
+
+    "cust   x1, x2, x3, x4\n\t"
+  );
+
+
+*/
+
+  int a,b,c,d;
+  a = 0xabc;
+  b = 0xdac;
+  c = 0xcab;
+
+  asm volatile
+  (
+    "cust   %[y], %[a], %[b], %[c]\n\t"
+    : [y] "=r" (d)
+    : [a] "r" (a), [b] "r" (b), [c] "r" (c) 
+  );
+
+  while(1);
+
 }
