@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 //#include <spi.h>
-//#include <gpio.h>
+#include <gpio.h>
 //#include <uart.h>
 //#include <utils.h>
 //#include <pulpino.h>
@@ -15,19 +15,44 @@
 #include <fft.h>
 
 
+#define N 8
+#define N_LOG2 3
+#define COEF_SIZE 12
+
+
 int main()
 {
-  uint32_t n = 8;
-  uint32_t n_log2 = 3;
 
 
-  fprintf(stderr, "Hello world!\n");
+
+
+  set_pin_function(11, FUNC_GPIO);
+  set_gpio_pin_direction(11, DIR_OUT);
+  set_gpio_pin_value(11, 0);
+
+
+  set_pin_function(10, FUNC_GPIO);
+  set_gpio_pin_direction(10, DIR_OUT);
+  set_gpio_pin_value(10, 0);
+
+  set_pin_function(9, FUNC_GPIO);
+  set_gpio_pin_direction(9, DIR_OUT);
+  set_gpio_pin_value(9, 0);
+
+    set_pin_function(8, FUNC_GPIO);
+  set_gpio_pin_direction(8, DIR_OUT);
+  set_gpio_pin_value(8, 0);
+
+
+  uint32_t n = N;
+  uint32_t n_log2 = N_LOG2;
+
 
 
 
 
   // Pre - calculated coef set for 8 points FFT
-  struct complex coef[12] = {
+  struct complex coef[COEF_SIZE] = {
     { 00000, 32767},
     { 00000, 32767},
     { 00000, 32767},
@@ -43,7 +68,7 @@ int main()
   };
 
 
-  struct complex array_in[8] = {
+  struct complex array_in[N] = {
   {0, 100},
   {0, 200},
   {0, 300},
@@ -55,7 +80,29 @@ int main()
   };
 
 
-  struct complex array_out[8];
+  struct complex array_out[N];
+  uint32_t array_out_abs[N];
+
+
+  uint32_t simd_coef[COEF_SIZE];
+  for (int i = 0; i < COEF_SIZE; ++i)
+  {
+    simd_coef[i] = convert_struct_to_simd(coef[i]);
+  }
+
+
+  uint32_t simd_array_in[N];
+  for (int i = 0; i < N; ++i)
+  {
+    simd_array_in[i] = convert_struct_to_simd(array_in[i]);
+  }
+
+
+  uint32_t simd_array_out[N];
+  uint32_t simd_array_out_abs[N];
+
+
+  set_gpio_pin_value(10, 1);
 
 
   fft (n, n_log2,
@@ -64,26 +111,33 @@ int main()
           array_out);
 
 
-
-
-  for (int i = 0; i < n; ++i)
+  for (int i = 0; i < N; ++i)
   {
-    print_complex (array_out[i]);
+    array_out_abs[i] = fast_abs(array_out[i]);
   }
 
-  //uint32_t simd_test = convert_struct_to_simd(coef[9]);
+
+  set_gpio_pin_value(9, 1);
 
 
-  //fprintf(stderr, "%x\n", simd_test);
-  //fprintf(stderr, "%x\n", (uint16_t)coef[9].im);
-  //fprintf(stderr, "%x\n", (uint16_t)coef[9].re);
 
+  fft_hw (n, n_log2,
+          simd_array_in,
+          simd_coef,
+          simd_array_out);
 
-  for (int i = 0; i < n; ++i)
+  for (int i = 0; i < N; ++i)
   {
-    fprintf(stderr, "%d\n", fast_abs(array_out[i]));
+    simd_array_out_abs[i] = fast_abs_hw(simd_array_out[i]);
   }
- 
+
+
+
+  set_gpio_pin_value(8, 1);
+
+
+
+while(1);
 
 }
 

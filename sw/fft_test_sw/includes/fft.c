@@ -1,5 +1,6 @@
 
-
+#include <stdint.h>
+#include <fft.h>
 
 /*
 void print_complex (struct complex in)
@@ -312,11 +313,11 @@ void fft_hw (uint32_t n, uint32_t n_log2,
     {
       for (uint32_t j = 0; j < (m >> 1); ++j)
       {            
-        struct complex x2 = out[k + j + (m >> 1)];
-        struct complex x1 = out[k + j];
+        uint32_t x2 = out[k + j + (m >> 1)];
+        uint32_t x1 = out[k + j];
 
-        struct complex y1;
-        struct complex y2;
+        uint32_t y1;
+        uint32_t y2;
 
         buttrefly2_dit_hw(x1,
                           x2,

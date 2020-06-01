@@ -36,6 +36,7 @@ OBJS = fft_test_sw.o\
 	./includes/sys_lib/src/int.o\
 	./includes/sys_lib/src/timer.o\
 	./includes/sys_lib/src/exceptions.o\
+	./includes/fft.o\
 	
 
 EMB_OBJS =  ./includes/ref/crt0.riscv.o
@@ -76,7 +77,9 @@ clean:
 	rm -f disasm_debug.S disasm_emb.S
 
 %.o:	%.S
-	${CC} ${ARCH} ${OFLAGS} $(BOARD_INCLUDE:%=-I%) -c $^ -o $@
+	#${CC} ${ARCH} ${OFLAGS} $(BOARD_INCLUDE:%=-I%) -c $^ -o $@
+	${CC} ${ARCH} $(BOARD_INCLUDE:%=-I%) -c $^ -o $@
 
 %.o:	%.c
-	${CC} ${ARCH} ${OFLAGS} $(DFLAGS) $(BOARD_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) $(GDBDEBUG) -c $^ -o $@
+	#${CC} ${ARCH} ${OFLAGS} $(DFLAGS) $(BOARD_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) $(GDBDEBUG) -c $^ -o $@
+	${CC} ${ARCH} $(DFLAGS) $(BOARD_INCLUDE:%=-I%) $(BSP_INCLUDE:%=-I%) $(GDBDEBUG) -c $^ -o $@
