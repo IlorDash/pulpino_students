@@ -1,6 +1,10 @@
 
-#define __riscv__
-#define LED_DELAY 1000000
+
+//#define __riscv__
+//#define LED_DELAY 1000000
+
+//#include <stdio.h>
+#include <stdint.h>
 
 //#include <spi.h>
 //#include <gpio.h>
@@ -8,108 +12,99 @@
 //#include <utils.h>
 //#include <pulpino.h>
 
+#include <fft.h>
+
 
 int main()
 {
-/*
-  uart_set_cfg(0, 325); // 9600 baud UART, np parity (50MHz CPU)
+  uint32_t n = 8;
+  uint32_t n_log2 = 3;
 
-  uart_send("Hello world!\n", 13); // 13 is a number of chars sent: 12 + "\n" 
-  uart_wait_tx_done();
 
-  set_pin_function(11, FUNC_GPIO);
-  set_gpio_pin_direction(11, DIR_OUT);
+  fprintf(stderr, "Hello world!\n");
 
-  set_gpio_pin_value(11, 0);
 
-  while(1) {
 
-  
-    for (int i = 0; i < LED_DELAY; i++) {
-      //wait some time
-      #ifdef __riscv__
-          asm volatile ("nop");
-      #else
-          asm volatile ("l.nop");
-      #endif
-    }
 
-    set_gpio_pin_value(11, 1);
+  // Pre - calculated coef set for 8 points FFT
+  struct complex coef[12] = {
+    { 00000, 32767},
+    { 00000, 32767},
+    { 00000, 32767},
+    { 00000, 32767},
+    { 00000, 32767},
+    { 32768, 00000},
+    { 00000, 32767},
+    { 32768, 00000},
+    { 00000, 32767},
+    { 42366, 23170},
+    { 32768, 00000},
+    { 42366, 42366},
+  };
 
-    for (int i = 0; i < LED_DELAY; i++) {
-      //wait some time
-      #ifdef __riscv__
-          asm volatile ("nop");
-      #else
-          asm volatile ("l.nop");
-      #endif
-    }
 
-    set_gpio_pin_value(11, 0);
-    
+  struct complex array_in[8] = {
+  {0, 100},
+  {0, 200},
+  {0, 300},
+  {0, 400},
+  {0, 500},
+  {0, 600},
+  {0, 700},
+  {0, 800}
+  };
+
+
+  struct complex array_out[8];
+
+
+  fft (n, n_log2,
+          array_in,
+          coef,
+          array_out);
+
+
+
+
+  for (int i = 0; i < n; ++i)
+  {
+    print_complex (array_out[i]);
   }
 
-*/
+  //uint32_t simd_test = convert_struct_to_simd(coef[9]);
+
+
+  //fprintf(stderr, "%x\n", simd_test);
+  //fprintf(stderr, "%x\n", (uint16_t)coef[9].im);
+  //fprintf(stderr, "%x\n", (uint16_t)coef[9].re);
+
+
+  for (int i = 0; i < n; ++i)
+  {
+    fprintf(stderr, "%d\n", fast_abs(array_out[i]));
+  }
+ 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
-  asm volatile
-  (
-    "addi x2, x0, 0xa\n\t"
-    "addi x3, x0, 0xb\n\t"
-    "addi x4, x0, 0xc\n\t"
 
-    "cust   x1, x2, x3, x4\n\t"
-  );
+
+
 
 
 */
-
-  int a,b,c,d,e,f,g,h;
-  a = 0xabc;
-  b = 0xdac;
-  c = 0xcab;
-
-  asm volatile
-  (//            rd    rs1   rs2   rs3
-    "btf2.t.y1   %[y], %[a], %[b], %[c]\n\t"
-    : [y] "=r" (d)
-    : [a] "r" (a), [b] "r" (b), [c] "r" (c) 
-  );
-
-
-  asm volatile
-  (//            rd    rs1   rs2   rs3
-    "btf2.t.y2   %[y], %[a], %[b], %[c]\n\t"
-    : [y] "=r" (e)
-    : [a] "r" (a), [b] "r" (b), [c] "r" (c) 
-  );
-
-
-  asm volatile
-  (//            rd    rs1   rs2   rs3
-    "btf2.f.y1   %[y], %[a], %[b], %[c]\n\t"
-    : [y] "=r" (f)
-    : [a] "r" (a), [b] "r" (b), [c] "r" (c) 
-  );
-
-
-  asm volatile
-  (//            rd    rs1   rs2   rs3
-    "btf2.f.y2   %[y], %[a], %[b], %[c]\n\t"
-    : [y] "=r" (g)
-    : [a] "r" (a), [b] "r" (b), [c] "r" (c) 
-  );
-
-
-  asm volatile
-  (//            rd    rs1
-    "btf2.abs   %[y], %[a]\n\t"
-    : [y] "=r" (h)
-    : [a] "r" (a) 
-  );
-
-
-  while(1);
-
-}
