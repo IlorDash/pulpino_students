@@ -1,4 +1,5 @@
-/vivado_project/*
+/pulpino_arty_a7_35t/*
+/pulpino_nexys_a7_100t/*
 
 /sw/*/*.o
 /sw/*/*/*/*.o

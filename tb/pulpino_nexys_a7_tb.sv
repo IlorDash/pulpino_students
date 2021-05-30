@@ -1,4 +1,4 @@
-module pulpino_arty_tb ();
+module pulpino_nexys_a7_tb ();
 
   logic CLK100MHZ;
 
@@ -76,7 +76,7 @@ module pulpino_arty_tb ();
   assign ja[1] = 1'b0;
 
 
-  pulpino_arty
+  pulpino_nexys_a7
   #(/*.DATA_RAM_INIT_FILE  (""),
     .INSTR_RAM_INIT_FILE ("")*/) 
   UUT

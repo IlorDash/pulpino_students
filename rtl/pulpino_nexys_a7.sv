@@ -1,4 +1,4 @@
-module pulpino_arty
+module pulpino_nexys_a7
  #(parameter DATA_RAM_INIT_FILE   = "test_sw_emb_data.dat",
    parameter INSTR_RAM_INIT_FILE  = "test_sw_emb_text.dat") 
  (
