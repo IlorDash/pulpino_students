@@ -255,11 +255,7 @@ set files [list \
  [file normalize "${origin_dir}/submodules/ibex/zeroriscy_multdiv_slow.sv"] \
  [file normalize "${origin_dir}/submodules/ibex/zeroriscy_prefetch_buffer.sv"] \
  [file normalize "${origin_dir}/submodules/ibex/zeroriscy_register_file_ff.sv"] \
- [file normalize "${origin_dir}/submodules/ibex/butterfly2_dif.sv"] \
- [file normalize "${origin_dir}/submodules/ibex/butterfly2_dit.sv"] \
- [file normalize "${origin_dir}/submodules/ibex/complex_mult.sv"] \
- [file normalize "${origin_dir}/submodules/ibex/fast_abs.sv"] \
- [file normalize "${origin_dir}/submodules/ibex/fft_accelerator.sv"] \
+ [file normalize "${origin_dir}/submodules/ibex/sha256_accelerator.sv"] \
  [file normalize "${origin_dir}/submodules/apb/apb_uart/apb_uart.vhd"] \
  [file normalize "${origin_dir}/submodules/apb/apb_uart/slib_clock_div.vhd"] \
  [file normalize "${origin_dir}/submodules/apb/apb_uart/slib_counter.vhd"] \
@@ -301,12 +297,15 @@ set files [list \
  [file normalize "${origin_dir}/submodules/riscv/riscv_prefetch_buffer.sv"] \
  [file normalize "${origin_dir}/submodules/riscv/riscv_register_file.sv"] \
  [file normalize "${origin_dir}/rtl/xilinx_spram.v"] \
+ [file normalize "${origin_dir}/sw/boot_code.dat"] \
  [file normalize "${origin_dir}/sw/test_sw_emb_text.dat"] \
  [file normalize "${origin_dir}/sw/test_sw_emb_data.dat"] \
- [file normalize "${origin_dir}/sw/fft_test_sw_emb_text.dat"] \
- [file normalize "${origin_dir}/sw/fft_test_sw_emb_data.dat"] \
- [file normalize "${origin_dir}/sw/boot_code.dat"] \
 ]
+
+
+# [file normalize "${origin_dir}/sw/fft_test_sw_emb_text.dat"] \
+# [file normalize "${origin_dir}/sw/fft_test_sw_emb_data.dat"] \
+
 
 # [file normalize "${origin_dir}/submodules/riscv/riscv_tracer.sv"] \
 # [file normalize "${origin_dir}/submodules/riscv/riscv_alu_basic.sv"] \
@@ -880,27 +879,8 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/ibex/butterfly2_dif.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
-set file "$origin_dir/submodules/ibex/butterfly2_dit.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/submodules/ibex/complex_mult.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/submodules/ibex/fast_abs.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/submodules/ibex/fft_accelerator.sv"
+set file "$origin_dir/submodules/ibex/sha256_accelerator.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
@@ -1115,15 +1095,15 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Data Files" -objects $file_obj
 
-set file "$origin_dir/sw/fft_test_sw_emb_text.dat"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "Data Files" -objects $file_obj
+#set file "$origin_dir/sw/fft_test_sw_emb_text.dat"
+#set file [file normalize $file]
+#set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+#set_property -name "file_type" -value "Data Files" -objects $file_obj
 
-set file "$origin_dir/sw/fft_test_sw_emb_data.dat"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "Data Files" -objects $file_obj
+#set file "$origin_dir/sw/fft_test_sw_emb_data.dat"
+#set file [file normalize $file]
+#set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+#set_property -name "file_type" -value "Data Files" -objects $file_obj
 
 
 set file "$origin_dir/sw/boot_code.dat"
