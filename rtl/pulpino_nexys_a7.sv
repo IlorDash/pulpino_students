@@ -248,6 +248,9 @@ module pulpino_nexys_a7
   assign tdi_i   = ja[1];
   assign ja[2]   = tdo_o;
   
+  assign ja[5] = '0;
+  assign ja[6] = '0;
+  assign ja[7] = '0;
 
 
 pulpino_top
