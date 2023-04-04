@@ -1,5 +1,5 @@
 # and don't touch the rest unless you know what you're doing.
-CROSS_COMPILE ?= /opt/riscv_multilib/bin/riscv64-unknown-elf-
+CROSS_COMPILE ?= /tools/riscv/bin/riscv64-unknown-elf-
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(patsubst %/,%,$(dir $(mkfile_path)))
 
@@ -56,7 +56,7 @@ $(OUTPUT_EMB): $(LDS_EMB) $(EMB_OBJS) $(OBJS) $(OUTPUT_OBJ)
 	$(SIZE) $(OUTPUT_EMB).elf
 
 dat: embedded
-	objcopy -I elf32-little -O binary -j .vectors -j .text $(OUTPUT_EMB).elf $(OUTPUT_EMB)_text.bin
+	objcopy -I elf32-little -O binary -j .vectors -j .text -j .text.__libc_init_array $(OUTPUT_EMB).elf $(OUTPUT_EMB)_text.bin
 	hexdump -ve '"%08x\n"' $(OUTPUT_EMB)_text.bin > ../$(OUTPUT_EMB)_text.dat
 
 	objcopy -I elf32-little -O binary -j .preinit_array -j .init_array -j .fini_array -j .rodata -j .shbss -j .data -j .bss -j .stack -j .stab -j .stabstr $(OUTPUT_EMB).elf $(OUTPUT_EMB)_data.bin
