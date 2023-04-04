@@ -311,10 +311,23 @@ set files [list \
  [file normalize "${origin_dir}/submodules/riscv/riscv_prefetch_buffer.sv"] \
  [file normalize "${origin_dir}/submodules/riscv/riscv_register_file.sv"] \
  [file normalize "${origin_dir}/rtl/xilinx_spram.v"] \
+ [file normalize "${origin_dir}/rtl/kuznechik_cipher.sv"] \
+ [file normalize "${origin_dir}/rtl/kuznechik_cipher_apb_wrapper.sv"] \
  [file normalize "${origin_dir}/sw/test_sw_emb_text.dat"] \
  [file normalize "${origin_dir}/sw/test_sw_emb_data.dat"] \
  [file normalize "${origin_dir}/sw/boot_code.dat"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/keys.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/S_box.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/S_box_inverted.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/L_muliplications/L_16.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/L_muliplications/L_32.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/L_muliplications/L_133.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/L_muliplications/L_148.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/L_muliplications/L_192.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/L_muliplications/L_194.mem"] \
+ [file normalize "${origin_dir}/rtl/look_up_tables/L_muliplications/L_251.mem"] \
 ]
+
 
 # [file normalize "${origin_dir}/submodules/riscv/riscv_tracer.sv"] \
 # [file normalize "${origin_dir}/submodules/riscv/riscv_alu_basic.sv"] \
@@ -1112,6 +1125,16 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
 
+set file "$origin_dir/rtl/kuznechik_cipher_apb_wrapper.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/rtl/kuznechik_cipher.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
 
 set file "$origin_dir/sw/test_sw_emb_text.dat"
 set file [file normalize $file]
@@ -1128,6 +1151,55 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Data Files" -objects $file_obj
 
+set file "${origin_dir}/rtl/look_up_tables/keys.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/S_box.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/S_box_inverted.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/L_muliplications/L_16.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/L_muliplications/L_32.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/L_muliplications/L_133.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/L_muliplications/L_148.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/L_muliplications/L_192.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/L_muliplications/L_194.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
+
+set file "${origin_dir}/rtl/look_up_tables/L_muliplications/L_251.mem"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Data Files" -objects $file_obj
 
 
 
