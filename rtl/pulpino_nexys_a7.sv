@@ -1,93 +1,17 @@
 module pulpino_nexys_a7
  #(parameter DATA_RAM_INIT_FILE   = "test_sw_emb_data.dat",
-   parameter INSTR_RAM_INIT_FILE  = "test_sw_emb_text.dat") 
+   parameter INSTR_RAM_INIT_FILE  = "test_sw_emb_text.dat")
  (
+  input logic         clk100mhz,
+  input logic         cpu_resetn,
 
-  input CLK100MHZ,
+  input  logic [15:0] sw,
+  output logic [15:0] led,
 
-  input [3:0] sw,
+  inout  logic [7:0]  ja,
 
-  output led0_b,
-  output led0_g,
-  output led0_r,
-  output led1_b,
-  output led1_g,
-  output led1_r,
-  output led2_b,
-  output led2_g,
-  output led2_r,
-  output led3_b,
-  output led3_g,
-  output led3_r,
-
-  output [3:0] led,
-
-  input [3:0] btn,
-
-  inout [7:0] ja,
-  // inout [7:0] jb,
-  // inout [7:0] jc,
-  // inout [7:0] jd,
-
-  output uart_rxd_out,
-  input  uart_txd_in,
-
-  inout ck_io0,
-  inout ck_io1,
-  inout ck_io2,
-  inout ck_io3,
-  inout ck_io4,
-  inout ck_io5,
-  inout ck_io6,
-  inout ck_io7,
-  // ck_io8,
-  // ck_io9,
-  // ck_io10,
-  // ck_io11,
-  // ck_io12,
-  // ck_io13,
-  // ck_io26,
-  // ck_io27,
-  // ck_io28,
-  // ck_io29,
-  // ck_io30,
-  // ck_io31,
-  // ck_io32,
-  // ck_io33,
-  // ck_io34,
-  // ck_io35,
-  // ck_io36,
-  // ck_io37,
-  // ck_io38,
-  // ck_io39,
-  // ck_io40,
-  // ck_io41,
-  // ck_a0,
-  // ck_a1,
-  // ck_a2,
-  // ck_a3,
-  // ck_a4,
-  // ck_a5,
-  // ck_a6,
-  // ck_a7,
-  // ck_a8,
-  // ck_a9,
-  // ck_a10,
-  // ck_a11,
-
-  //ck_miso,
-  //ck_mosi,
-  //ck_sck,
-  //ck_ss,
-
-  inout ck_scl,
-  inout ck_sda,
-  output scl_pup,
-  output sda_pup,
-
-  //ck_ioa
-  input ck_rst
-
+  output logic        uart_rxd_out,
+  input  logic        uart_txd_in
 );
 
   // Clock and reset +
@@ -96,14 +20,14 @@ module pulpino_nexys_a7
 
   xilinx_mmcm clk_gen
   (
-    .clk_in1  (CLK100MHZ),
+    .clk_in1  (clk100mhz),
     .clk_out1 (clk),
     .locked   (locked)
   );
 
 
   logic rst_n;
-  assign rst_n = (locked & ck_rst) ? 1'b1 : 1'b0;
+  assign rst_n = (locked & cpu_resetn) ? 1'b1 : 1'b0;
 
 
   //SPI Slave
@@ -162,8 +86,6 @@ module pulpino_nexys_a7
   logic sda_pad_o;
   logic sda_padoen_o;
 
-  assign scl_pup = 1'bz;
-  assign sda_pup = 1'bz;
 
   assign ck_scl = scl_padoen_o ? scl_pad_o : 1'bz;
   assign ck_sda = sda_padoen_o ? sda_pad_o : 1'bz;
@@ -191,48 +113,36 @@ module pulpino_nexys_a7
   logic [31:0] gpio_dir;
 
 
-  assign gpio_in[3:0] = btn;
-  assign gpio_in[7:4] = sw;
+  assign gpio_in[15:0] = sw;
+  assign gpio_in[31:16] = '0;
 
-  assign led = gpio_out[11:8];
-  
-  assign led0_b = gpio_out[12];
-  assign led0_g = gpio_out[13];
-  assign led0_r = gpio_out[14];
-  assign led1_b = gpio_out[15];
-  assign led1_g = gpio_out[16];
-  assign led1_r = gpio_out[17];
-  assign led2_b = gpio_out[18];
-  assign led2_g = gpio_out[19];
-  assign led2_r = gpio_out[20];
-  assign led3_b = gpio_out[21];
-  assign led3_g = gpio_out[22];
-  assign led3_r = gpio_out[23];
+  assign led = gpio_out[31:16];
 
 
-  assign ck_io0 = (gpio_dir[24] == GPIO_DIR_OUT) ? gpio_out[24] : 1'bz;
-  assign gpio_in[24] = ck_io0;
+  // Example for gpio ports
+  // assign ck_io0 = (gpio_dir[24] == GPIO_DIR_OUT) ? gpio_out[24] : 1'bz;
+  // assign gpio_in[24] = ck_io0;
 
-  assign ck_io1 = (gpio_dir[25] == GPIO_DIR_OUT) ? gpio_out[25] : 1'bz;
-  assign gpio_in[25] = ck_io1;
+  // assign ck_io1 = (gpio_dir[25] == GPIO_DIR_OUT) ? gpio_out[25] : 1'bz;
+  // assign gpio_in[25] = ck_io1;
 
-  assign ck_io2 = (gpio_dir[26] == GPIO_DIR_OUT) ? gpio_out[26] : 1'bz;
-  assign gpio_in[26] = ck_io2;
+  // assign ck_io2 = (gpio_dir[26] == GPIO_DIR_OUT) ? gpio_out[26] : 1'bz;
+  // assign gpio_in[26] = ck_io2;
 
-  assign ck_io3 = (gpio_dir[27] == GPIO_DIR_OUT) ? gpio_out[27] : 1'bz;
-  assign gpio_in[27] = ck_io3;
+  // assign ck_io3 = (gpio_dir[27] == GPIO_DIR_OUT) ? gpio_out[27] : 1'bz;
+  // assign gpio_in[27] = ck_io3;
 
-  assign ck_io4 = (gpio_dir[28] == GPIO_DIR_OUT) ? gpio_out[28] : 1'bz;
-  assign gpio_in[28] = ck_io4;
+  // assign ck_io4 = (gpio_dir[28] == GPIO_DIR_OUT) ? gpio_out[28] : 1'bz;
+  // assign gpio_in[28] = ck_io4;
 
-  assign ck_io5 = (gpio_dir[29] == GPIO_DIR_OUT) ? gpio_out[29] : 1'bz;
-  assign gpio_in[29] = ck_io5;
+  // assign ck_io5 = (gpio_dir[29] == GPIO_DIR_OUT) ? gpio_out[29] : 1'bz;
+  // assign gpio_in[29] = ck_io5;
 
-  assign ck_io6 = (gpio_dir[30] == GPIO_DIR_OUT) ? gpio_out[30] : 1'bz;
-  assign gpio_in[30] = ck_io6;
+  // assign ck_io6 = (gpio_dir[30] == GPIO_DIR_OUT) ? gpio_out[30] : 1'bz;
+  // assign gpio_in[30] = ck_io6;
 
-  assign ck_io7 = (gpio_dir[31] == GPIO_DIR_OUT) ? gpio_out[31] : 1'bz;
-  assign gpio_in[31] = ck_io7;
+  // assign ck_io7 = (gpio_dir[31] == GPIO_DIR_OUT) ? gpio_out[31] : 1'bz;
+  // assign gpio_in[31] = ck_io7;
 
 
   // JTAG signals +
@@ -247,10 +157,11 @@ module pulpino_nexys_a7
   assign tms_i   = ja[0];
   assign tdi_i   = ja[1];
   assign ja[2]   = tdo_o;
-  
+
   assign ja[5] = '0;
   assign ja[6] = '0;
   assign ja[7] = '0;
+
 
 
 pulpino_top

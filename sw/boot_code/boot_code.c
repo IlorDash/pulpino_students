@@ -21,10 +21,10 @@
 
 int main()
 {
-  set_pin_function(11, FUNC_GPIO);
-  set_gpio_pin_direction(11, DIR_OUT);
+  set_pin_function(31, FUNC_GPIO);
+  set_gpio_pin_direction(31, DIR_OUT);
   
-  set_gpio_pin_value(11, 0);
+  set_gpio_pin_value(31, 0);
   
   for (int i = 0; i < LED_DELAY; i++) {
     //wait some time to have proper power up of external flash
@@ -35,7 +35,7 @@ int main()
     #endif
   }
 
-  set_gpio_pin_value(11, 1);
+  set_gpio_pin_value(31, 1);
 
   for (int i = 0; i < LED_DELAY; i++) {
     //wait some time to have proper power up of external flash
@@ -46,7 +46,7 @@ int main()
     #endif
   }
 
-  set_gpio_pin_value(11, 0);
+  set_gpio_pin_value(31, 0);
 
 
   //jump to program start address (instruction base address)
