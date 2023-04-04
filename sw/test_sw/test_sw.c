@@ -11,7 +11,7 @@
 
 int main()
 {
-  uart_set_cfg(0, 325); // 9600 baud UART, np parity (50MHz CPU)
+  uart_set_cfg(0, 325); // 9600 baud UART, no parity (50MHz CPU)
 
   uart_send("Hello world!\n", 13); // 13 is a number of chars sent: 12 + "\n" 
   uart_wait_tx_done();
