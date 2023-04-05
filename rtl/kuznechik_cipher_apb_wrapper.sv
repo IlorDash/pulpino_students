@@ -18,26 +18,42 @@ module kuznechik_cipher_apb_wrapper
 
   // Local declarations
 
-  localparam ADDR_CTRL    = 12'h0;
-    localparam OFFSET_RST = 0;
-    localparam OFFSET_REQ = 1;
-    localparam OFFSET_ACK = 2;
+  localparam ADDR_RST    = 12'h0;
+  localparam ADDR_REQ    = 12'h4;
+  localparam ADDR_ACK    = 12'h8;
 
-  localparam ADDR_STATUS    = 12'h4;
-    localparam OFFSET_VALID = 0;
-    localparam OFFSET_BUSY  = 1;
+  localparam ADDR_VALID   = 12'hc;
+  localparam ADDR_BUSY    = 12'h10;
 
-  localparam ADDR_DATA_IN_0 = 12'h8;
-  localparam ADDR_DATA_IN_1 = 12'hc;
-  localparam ADDR_DATA_IN_2 = 12'h10;
-  localparam ADDR_DATA_IN_3 = 12'h14;
+  localparam ADDR_DATA_IN_0 = 12'h14;
+  localparam ADDR_DATA_IN_1 = 12'h18;
+  localparam ADDR_DATA_IN_2 = 12'h1c;
+  localparam ADDR_DATA_IN_3 = 12'h20;
 
-  localparam ADDR_DATA_OUT_0 = 12'h18;
-  localparam ADDR_DATA_OUT_1 = 12'h1c;
-  localparam ADDR_DATA_OUT_2 = 12'h20;
-  localparam ADDR_DATA_OUT_3 = 12'h24;
+  localparam ADDR_DATA_OUT_0 = 12'h24;
+  localparam ADDR_DATA_OUT_1 = 12'h28;
+  localparam ADDR_DATA_OUT_2 = 12'h2c;
+  localparam ADDR_DATA_OUT_3 = 12'h30;
 
+  logic                      apb_write;
+  logic                      apb_read;
 
+  logic                      apb_sel_rst;
+  logic                      apb_sel_req;
+  logic                      apb_sel_ack;
+
+  logic                      apb_sel_valid;
+  logic                      apb_sel_busy;
+
+  logic                      apb_sel_data_in_0;
+  logic                      apb_sel_data_in_1;
+  logic                      apb_sel_data_in_2;
+  logic                      apb_sel_data_in_3;
+
+  logic                      apb_sel_data_out_0;
+  logic                      apb_sel_data_out_1;
+  logic                      apb_sel_data_out_2;
+  logic                      apb_sel_data_out_3;
 
   logic                      cipher_rstn;
 
@@ -99,8 +115,12 @@ module kuznechik_cipher_apb_wrapper
   assign apb_write          = apb_psel_i & apb_pwrite_i;
   assign apb_read           = apb_psel_i & ~apb_pwrite_i;
 
-  assign apb_sel_ctrl       = (apb_paddr_i == ADDR_CTRL);
-  assign apb_sel_status     = (apb_paddr_i == ADDR_STATUS);
+  assign apb_sel_rst        = (apb_paddr_i == ADDR_RST);
+  assign apb_sel_req        = (apb_paddr_i == ADDR_REQ);
+  assign apb_sel_ack        = (apb_paddr_i == ADDR_ACK);
+
+  assign apb_sel_valid      = (apb_paddr_i == ADDR_VALID);
+  assign apb_sel_busy       = (apb_paddr_i == ADDR_BUSY);
 
   assign apb_sel_data_in_0  = (apb_paddr_i == ADDR_DATA_IN_0);
   assign apb_sel_data_in_1  = (apb_paddr_i == ADDR_DATA_IN_1);
@@ -118,9 +138,9 @@ module kuznechik_cipher_apb_wrapper
 
   // RST bit
 
-  assign ctrl_rst_en = (apb_write & apb_sel_ctrl);
+  assign ctrl_rst_en = (apb_write & apb_sel_rst);
 
-  assign ctrl_rst_next = apb_pwdata_i[OFFSET_RST];
+  assign ctrl_rst_next = apb_pwdata_i[0];
 
   always_ff @(posedge clk_i or negedge rstn_i)
   if (~rstn_i)
@@ -131,11 +151,11 @@ module kuznechik_cipher_apb_wrapper
 
   // REQ bit
 
-  assign ctrl_req_en = (apb_write & apb_sel_ctrl)
+  assign ctrl_req_en = (apb_write & apb_sel_req)
                      | ctrl_req_ff;
 
-  assign ctrl_req_next = (apb_write & apb_sel_ctrl) ? apb_pwdata_i[OFFSET_REQ]
-                       :                              '0;
+  assign ctrl_req_next = (apb_write & apb_sel_req) ? apb_pwdata_i[0]
+                       :                             '0;
 
   always_ff @(posedge clk_i or negedge rstn_i)
   if (~rstn_i)
@@ -146,11 +166,11 @@ module kuznechik_cipher_apb_wrapper
 
   // ACK bit
 
-  assign ctrl_ack_en = (apb_write & apb_sel_ctrl)
+  assign ctrl_ack_en = (apb_write & apb_sel_ack)
                      | ctrl_ack_ff;
 
-  assign ctrl_ack_next = (apb_write & apb_sel_ctrl) ? apb_pwdata_i[OFFSET_ACK]
-                       :                              '0;
+  assign ctrl_ack_next = (apb_write & apb_sel_ack) ? apb_pwdata_i[0]
+                       :                             '0;
 
   always_ff @(posedge clk_i or negedge rstn_i)
   if (~rstn_i)
@@ -220,8 +240,11 @@ module kuznechik_cipher_apb_wrapper
   // APB data out         //
   //////////////////////////
 
-  assign apb_dout_next = apb_sel_ctrl       ? APB_DATA_WIDTH'({ctrl_ack_ff, ctrl_req_ff, ctrl_rst_ff})
-                       : apb_sel_status     ? APB_DATA_WIDTH'({cipher2regs_busy, cipher2regs_valid})
+  assign apb_dout_next = apb_sel_rst        ? APB_DATA_WIDTH'(ctrl_rst_ff)
+                       : apb_sel_req        ? APB_DATA_WIDTH'(ctrl_req_ff)
+                       : apb_sel_ack        ? APB_DATA_WIDTH'(ctrl_ack_ff)
+                       : apb_sel_valid      ? APB_DATA_WIDTH'(cipher2regs_valid)
+                       : apb_sel_busy       ? APB_DATA_WIDTH'(cipher2regs_busy)
                        : apb_sel_data_in_0  ? APB_DATA_WIDTH'(data_in_0_ff)
                        : apb_sel_data_in_1  ? APB_DATA_WIDTH'(data_in_1_ff)
                        : apb_sel_data_in_2  ? APB_DATA_WIDTH'(data_in_2_ff)
@@ -267,8 +290,11 @@ module kuznechik_cipher_apb_wrapper
 
   // Writes to status are forbidden
   // Writes to data_out registers are forbidden
-  assign apb_err_next = ~apb_sel_ctrl
-                      & ~(apb_sel_status & ~apb_pwrite_i)
+  assign apb_err_next = ~apb_sel_rst
+                      & ~apb_sel_req
+                      & ~apb_sel_ack
+                      & ~(apb_sel_valid & ~apb_pwrite_i)
+                      & ~(apb_sel_busy  & ~apb_pwrite_i)
                       & ~apb_sel_data_in_0
                       & ~apb_sel_data_in_1
                       & ~apb_sel_data_in_2
