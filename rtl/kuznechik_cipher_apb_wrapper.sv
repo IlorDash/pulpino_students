@@ -270,9 +270,9 @@ module kuznechik_cipher_apb_wrapper
   // APB ready            //
   //////////////////////////
 
-  assign apb_ready_next = apb_psel_i & ~apb_penable_i;
+  assign apb_ready_next = ( apb_psel_i & apb_penable_i ) & ~apb_ready_ff;
 
-  assign apb_ready_en = (apb_psel_i & ~apb_penable_i)
+  assign apb_ready_en = (apb_psel_i & apb_penable_i)
                       | apb_ready_ff;
 
   always_ff @(posedge clk_i or negedge rstn_i)
@@ -305,7 +305,7 @@ module kuznechik_cipher_apb_wrapper
                       & ~(apb_sel_data_out_3 & ~apb_pwrite_i);
 
 
-  assign apb_err_en = (apb_psel_i & ~apb_penable_i);
+  assign apb_err_en = (apb_psel_i & apb_penable_i);
 
   always_ff @(posedge clk_i or negedge rstn_i)
   if (~rstn_i)
