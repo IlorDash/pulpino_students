@@ -29,8 +29,8 @@ module periph_bus_wrap
     APB_BUS.Master    i2c_master,
     APB_BUS.Master    fll_master,
     APB_BUS.Master    soc_ctrl_master,
-    APB_BUS.Master    debug_master
-
+    APB_BUS.Master    debug_master,
+    APB_BUS.Master    cipher_master
     );
 
   localparam NB_MASTER      = `NB_MASTER;
@@ -89,6 +89,10 @@ module periph_bus_wrap
   `APB_ASSIGN_MASTER(s_masters[8], debug_master);
   assign s_start_addr[8] = `DEBUG_START_ADDR;
   assign s_end_addr[8]   = `DEBUG_END_ADDR;
+
+  `APB_ASSIGN_MASTER(s_masters[9], cipher_master);
+  assign s_start_addr[9] = `CIPHER_START_ADDR;
+  assign s_end_addr[9] = `CIPHER_END_ADDR;
 
   //********************************************************
   //**************** SOC BUS *******************************

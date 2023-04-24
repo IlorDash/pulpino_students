@@ -100,7 +100,7 @@ module peripherals
   );
 
   localparam APB_ADDR_WIDTH  = 32;
-  localparam APB_NUM_SLAVES  = 8;
+  localparam APB_NUM_SLAVES  = 9;
 
   APB_BUS s_apb_bus();
 
@@ -113,6 +113,7 @@ module peripherals
   APB_BUS s_fll_bus();
   APB_BUS s_soc_ctrl_bus();
   APB_BUS s_debug_bus();
+  APB_BUS s_cipher_bus();
 
   logic [1:0]   s_spim_event;
   logic [3:0]   timer_irq;
@@ -227,7 +228,8 @@ module peripherals
      .i2c_master        ( s_i2c_bus        ),
      .fll_master        ( s_fll_bus        ),
      .soc_ctrl_master   ( s_soc_ctrl_bus   ),
-     .debug_master      ( s_debug_bus      )
+     .debug_master      ( s_debug_bus      ),
+     .cipher_master     ( s_cipher_bus     )
   );
 
   //////////////////////////////////////////////////////////////////
@@ -545,5 +547,25 @@ module peripherals
     .per_master_r_valid_i ( debug.rvalid            ),
     .per_master_r_opc_i   ( '0                      ),
     .per_master_r_rdata_i ( debug.rdata             )
+  );
+
+  //////////////////////////////////////////////////////////////////
+  ///                                                            ///
+  /// APB Slave 9: Kuznechik cipher                            ///
+  ///                                                            ///
+  //////////////////////////////////////////////////////////////////
+  kuznechik_cipher_apb_wrapper
+  kuznechik_cipher_apb_wrapper_i
+  (
+    .clk_i(clk_int[8]),
+    .rstn_i(rst_n),
+    .apb_paddr_i(s_cipher_bus.paddr[31:0]),
+    .apb_pwdata_i(s_cipher_bus.pwdata),
+    .apb_pwrite_i(s_cipher_bus.pwrite),
+    .apb_psel_i(s_cipher_bus.psel),
+    .apb_penable_i(s_cipher_bus.penable),
+    .apb_prdata_o(s_cipher_bus.prdata),
+    .apb_pready_o(s_cipher_bus.pready),
+    .apb_pslverr_o(s_cipher_bus.pslverr)
   );
 endmodule
