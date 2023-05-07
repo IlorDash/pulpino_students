@@ -1,4 +1,4 @@
-module pulpino_nexys_a7_tb_kuznechik ();
+module pulpino_nexys_a7_tb_cipher ();
     logic        clk100mhz;
     logic [15:0] sw;
     logic [15:0] led;
