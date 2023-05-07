@@ -38,9 +38,17 @@ module kuznechik_cipher(
     $readmemh("L_251.mem", L_mul_251_mem);
   end
 
+  always_ff @(posedge clk_i) begin
+    if (~resetn_i) begin
+      valid_o <= 0;
+    end else if(ack_i == 1) begin
+      valid_o <= 0;
+    end else if (state == FINISH) begin
+      valid_o <= 1;
+    end
+  end
 
-  assign valid_o = (state == FINISH);
-  assign data_o  = (state == FINISH) ? data_key_result : 0;
+  assign data_o  = (valid_o == 1) ? data_key_result : 0;
   assign busy_o  = (state != IDLE);
 
   logic [2:0] state;
@@ -65,7 +73,7 @@ module kuznechik_cipher(
         state <= LIN;
       end else if ((state == LIN) && lin_conv_passed) begin
         state <= KEY;
-      end else if (state == FINISH) begin
+      end else if ((state == FINISH) && (ack_i == 1)) begin
         state <= IDLE;
       end
     end
