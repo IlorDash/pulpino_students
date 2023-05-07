@@ -45,29 +45,68 @@ int cipher_data(const uint32_t* src, uint32_t* dst) {
     for (int i = 0; i < CIPHER_DATA_BYTES_NUM / 4; i++) {
         cipher->DATA_IN[i] = src[i];
     }
+    set_gpio_pin_value(28, 1);
 
     // wait for previous request finished
     if (!wait_cipher_free(MAX_WAIT_CYCLES)) {
         cipher->RST = 0;
         return -1;
     }
+
+    set_gpio_pin_value(28, 0);
+
+    for (int i = 0; i < CIPHER_DATA_BYTES_NUM / 4; i++) {
+        cipher->DATA_IN[i] = src[i];
+    }
+
+    set_gpio_pin_value(28, 1);
+
     req_cipher();
+
+    set_gpio_pin_value(28, 0);
 
     if (!wait_cipher_valid(MAX_WAIT_CYCLES)) {
         cipher->RST = 0;
         return -1;
     }
 
+    set_gpio_pin_value(28, 1);
+
     for (int i = 0; i < CIPHER_DATA_BYTES_NUM / 4; i++) {
         dst[i] = cipher->DATA_OUT[i];
     }
+
+    set_gpio_pin_value(28, 0);
+
     ack_cipher();
 
+    set_gpio_pin_value(28, 1);
     return 0;
 }
 
 void cipher_init(void) {
     CGREG |= (1 << CGCIPHER);
+
+    set_gpio_pin_value(29, 1);
+
     cipher = (struct CIPHER_APB*)(CIPHER_BASE_ADDR);
+
+    set_gpio_pin_value(29, 0);
+
+    if(cipher->RST == 1){
+        set_gpio_pin_value(30, 1);
+    } else {
+        set_gpio_pin_value(30, 1);
+        set_gpio_pin_value(29, 1);
+    }
+
     cipher->RST = 1;
+
+    if(cipher->RST == 1){
+        set_gpio_pin_value(30, 0);
+        set_gpio_pin_value(29, 0);
+    } else {
+        set_gpio_pin_value(30, 1);
+        set_gpio_pin_value(29, 1);
+    }
 }

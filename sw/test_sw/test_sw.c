@@ -20,6 +20,9 @@ int main() {
     set_pin_function(29, FUNC_GPIO);
     set_gpio_pin_direction(29, DIR_OUT);
 
+    set_pin_function(28, FUNC_GPIO);
+    set_gpio_pin_direction(28, DIR_OUT);
+
     set_gpio_pin_value(30, 0);
 
     cipher_init();
