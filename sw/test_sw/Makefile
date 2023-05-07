@@ -24,6 +24,7 @@ BOARD_INCLUDE = ./includes/sys_lib/inc\
 BOOT_INCLUDE  = \
 
 OBJS = test_sw.o\
+	cipher.o\
 	./includes/sys_lib/src/spi.o\
 	./includes/sys_lib/src/gpio.o\
 	./includes/sys_lib/src/uart.o\
@@ -33,7 +34,7 @@ OBJS = test_sw.o\
 	./includes/sys_lib/src/int.o\
 	./includes/sys_lib/src/timer.o\
 	./includes/sys_lib/src/exceptions.o\
-	
+
 
 EMB_OBJS =  ./includes/ref/crt0.riscv.o
 
@@ -43,7 +44,7 @@ OUTPUT      = test_sw
 OUTPUT_EMB  = $(OUTPUT)_emb
 
 
-.PHONY: all dat 
+.PHONY: all dat
 all: clean embedded dat
 
 
