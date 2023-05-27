@@ -23,7 +23,6 @@ int main()
 
   while(1) {
 
-  
     for (int i = 0; i < LED_DELAY; i++) {
       //wait some time
       #ifdef __riscv__
