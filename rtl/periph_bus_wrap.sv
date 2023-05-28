@@ -10,47 +10,42 @@
 
 `include "apb_bus.sv"
 
-module periph_bus_wrap
-  #(
+module periph_bus_wrap #(
     parameter APB_ADDR_WIDTH = 32,
     parameter APB_DATA_WIDTH = 32
-    )
-   (
-    input logic       clk_i,
-    input logic       rst_ni,
+) (
+    input logic clk_i,
+    input logic rst_ni,
 
-    APB_BUS.Slave     apb_slave,
+    APB_BUS.Slave apb_slave,
 
-    APB_BUS.Master    uart_master,
-    APB_BUS.Master    gpio_master,
-    APB_BUS.Master    spi_master,
-    APB_BUS.Master    timer_master,
-    APB_BUS.Master    event_unit_master,
-    APB_BUS.Master    i2c_master,
-    APB_BUS.Master    fll_master,
-    APB_BUS.Master    soc_ctrl_master,
-    APB_BUS.Master    debug_master
+    APB_BUS.Master uart_master,
+    APB_BUS.Master gpio_master,
+    APB_BUS.Master spi_master,
+    APB_BUS.Master timer_master,
+    APB_BUS.Master event_unit_master,
+    APB_BUS.Master i2c_master,
+    APB_BUS.Master fll_master,
+    APB_BUS.Master soc_ctrl_master,
+    APB_BUS.Master debug_master,
+    APB_BUS.Master spi_accel_master
 
-    );
+);
 
-  localparam NB_MASTER      = `NB_MASTER;
+  localparam NB_MASTER = `NB_MASTER;
 
   logic [NB_MASTER-1:0][APB_ADDR_WIDTH-1:0] s_start_addr;
   logic [NB_MASTER-1:0][APB_ADDR_WIDTH-1:0] s_end_addr;
 
-  APB_BUS
-    #(
+  APB_BUS #(
       .APB_ADDR_WIDTH(APB_ADDR_WIDTH),
       .APB_DATA_WIDTH(APB_DATA_WIDTH)
-      )
-  s_masters[NB_MASTER-1:0]();
+  ) s_masters[NB_MASTER-1:0] ();
 
-  APB_BUS
-    #(
+  APB_BUS #(
       .APB_ADDR_WIDTH(APB_ADDR_WIDTH),
       .APB_DATA_WIDTH(APB_DATA_WIDTH)
-      )
-  s_slave();
+  ) s_slave ();
 
   `APB_ASSIGN_SLAVE(s_slave, apb_slave);
 
@@ -90,26 +85,27 @@ module periph_bus_wrap
   assign s_start_addr[8] = `DEBUG_START_ADDR;
   assign s_end_addr[8]   = `DEBUG_END_ADDR;
 
+  `APB_ASSIGN_MASTER(s_masters[8], spi_accel_master);
+  assign s_start_addr[8] = `SPI_ACCEL_START_ADDR;
+  assign s_end_addr[8]   = `SPI_ACCEL_END_ADDR;
+
   //********************************************************
   //**************** SOC BUS *******************************
   //********************************************************
 
-  apb_node_wrap
-  #(
-    .NB_MASTER      ( NB_MASTER      ),
-    .APB_ADDR_WIDTH ( APB_ADDR_WIDTH ),
-    .APB_DATA_WIDTH ( APB_DATA_WIDTH )
-  )
-  apb_node_wrap_i
-  (
-    .clk_i        ( clk_i        ),
-    .rst_ni       ( rst_ni       ),
+  apb_node_wrap #(
+      .NB_MASTER     (NB_MASTER),
+      .APB_ADDR_WIDTH(APB_ADDR_WIDTH),
+      .APB_DATA_WIDTH(APB_DATA_WIDTH)
+  ) apb_node_wrap_i (
+      .clk_i (clk_i),
+      .rst_ni(rst_ni),
 
-    .apb_slave    ( s_slave      ),
-    .apb_masters  ( s_masters    ),
+      .apb_slave  (s_slave),
+      .apb_masters(s_masters),
 
-    .start_addr_i ( s_start_addr ),
-    .end_addr_i   ( s_end_addr   )
+      .start_addr_i(s_start_addr),
+      .end_addr_i  (s_end_addr)
   );
 
 endmodule
