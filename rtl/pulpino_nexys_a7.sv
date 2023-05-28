@@ -1,28 +1,32 @@
-module pulpino_nexys_a7
- #(parameter DATA_RAM_INIT_FILE   = "test_sw_emb_data.dat",
-   parameter INSTR_RAM_INIT_FILE  = "test_sw_emb_text.dat")
- (
-  input logic         clk100mhz,
-  input logic         cpu_resetn,
+module pulpino_nexys_a7 #(
+    parameter DATA_RAM_INIT_FILE  = "test_sw_emb_data.dat",
+    parameter INSTR_RAM_INIT_FILE = "test_sw_emb_text.dat"
+) (
+    input logic clk100mhz,
+    input logic cpu_resetn,
 
-  input  logic [15:0] sw,
-  output logic [15:0] led,
+    input  logic [15:0] sw,
+    output logic [15:0] led,
 
-  inout  logic [7:0]  ja,
+    inout logic [7:0] ja,
 
-  output logic        uart_rxd_out,
-  input  logic        uart_txd_in
+    output logic uart_rxd_out,
+    input  logic uart_txd_in,
+
+    input  logic acl_miso,
+    output logic acl_mosi,
+    output logic acl_sclk,
+    output logic acl_csn
 );
 
   // Clock and reset +
   logic clk;
   logic locked;
 
-  xilinx_mmcm clk_gen
-  (
-    .clk_in1  (clk100mhz),
-    .clk_out1 (clk),
-    .locked   (locked)
+  xilinx_mmcm clk_gen (
+      .clk_in1 (clk100mhz),
+      .clk_out1(clk),
+      .locked  (locked)
   );
 
 
@@ -104,8 +108,8 @@ module pulpino_nexys_a7
 
   // GPIO
 
-  localparam GPIO_DIR_IN  =  0;
-  localparam GPIO_DIR_OUT =  1;
+  localparam GPIO_DIR_IN = 0;
+  localparam GPIO_DIR_OUT = 1;
 
 
   logic [31:0] gpio_in;
@@ -158,91 +162,93 @@ module pulpino_nexys_a7
   assign tdi_i   = ja[1];
   assign ja[2]   = tdo_o;
 
-  assign ja[5] = '0;
-  assign ja[6] = '0;
-  assign ja[7] = '0;
+  assign ja[5]   = '0;
+  assign ja[6]   = '0;
+  assign ja[7]   = '0;
 
 
 
-pulpino_top
-  #(
-    .USE_ZERO_RISCY (1),
-    .RISCY_RV32F    (0),
-    .ZERO_RV32M     (1),
-    .ZERO_RV32E     (0),
-    .DATA_RAM_INIT_FILE   (DATA_RAM_INIT_FILE),
-    .INSTR_RAM_INIT_FILE  (INSTR_RAM_INIT_FILE)
-  )
-  pulpino_inst
-  (
-    // Clock and Reset
-    .clk   (clk),
-    .rst_n (rst_n),
+  pulpino_top #(
+      .USE_ZERO_RISCY     (1),
+      .RISCY_RV32F        (0),
+      .ZERO_RV32M         (1),
+      .ZERO_RV32E         (0),
+      .DATA_RAM_INIT_FILE (DATA_RAM_INIT_FILE),
+      .INSTR_RAM_INIT_FILE(INSTR_RAM_INIT_FILE)
+  ) pulpino_inst (
+      // Clock and Reset
+      .clk  (clk),
+      .rst_n(rst_n),
 
-    .clk_sel_i        (1'b0),
-    .clk_standalone_i (1'b0),
-    .testmode_i       (1'b0),
-    .fetch_enable_i   (1'b1),
-    .scan_enable_i    (1'b0),
+      .clk_sel_i       (1'b0),
+      .clk_standalone_i(1'b0),
+      .testmode_i      (1'b0),
+      .fetch_enable_i  (1'b1),
+      .scan_enable_i   (1'b0),
 
-    //SPI Slave
-    .spi_clk_i  (spi_clk_i) /*verilator clocker*/,
-    .spi_cs_i   (spi_cs_i) /*verilator clocker*/,
-    .spi_mode_o (spi_mode_o),
-    .spi_sdo0_o (spi_sdo0_o),
-    .spi_sdo1_o (spi_sdo1_o),
-    .spi_sdo2_o (spi_sdo2_o),
-    .spi_sdo3_o (spi_sdo3_o),
-    .spi_sdi0_i (spi_sdi0_i),
-    .spi_sdi1_i (spi_sdi1_i),
-    .spi_sdi2_i (spi_sdi2_i),
-    .spi_sdi3_i (spi_sdi3_i),
+      //SPI Slave
+      .spi_clk_i (spi_clk_i)  /*verilator clocker*/,
+      .spi_cs_i  (spi_cs_i)  /*verilator clocker*/,
+      .spi_mode_o(spi_mode_o),
+      .spi_sdo0_o(spi_sdo0_o),
+      .spi_sdo1_o(spi_sdo1_o),
+      .spi_sdo2_o(spi_sdo2_o),
+      .spi_sdo3_o(spi_sdo3_o),
+      .spi_sdi0_i(spi_sdi0_i),
+      .spi_sdi1_i(spi_sdi1_i),
+      .spi_sdi2_i(spi_sdi2_i),
+      .spi_sdi3_i(spi_sdi3_i),
 
-    //SPI Master
-    .spi_master_clk_o  (spi_master_clk_o),
-    .spi_master_csn0_o (spi_master_csn0_o),
-    .spi_master_csn1_o (spi_master_csn1_o),
-    .spi_master_csn2_o (spi_master_csn2_o),
-    .spi_master_csn3_o (spi_master_csn3_o),
-    .spi_master_mode_o (spi_master_mode_o),
-    .spi_master_sdo0_o (spi_master_sdo0_o),
-    .spi_master_sdo1_o (spi_master_sdo1_o),
-    .spi_master_sdo2_o (spi_master_sdo2_o),
-    .spi_master_sdo3_o (spi_master_sdo3_o),
-    .spi_master_sdi0_i (spi_master_sdi0_i),
-    .spi_master_sdi1_i (spi_master_sdi1_i),
-    .spi_master_sdi2_i (spi_master_sdi2_i),
-    .spi_master_sdi3_i (spi_master_sdi3_i),
+      //SPI Master
+      .spi_master_clk_o (spi_master_clk_o),
+      .spi_master_csn0_o(spi_master_csn0_o),
+      .spi_master_csn1_o(spi_master_csn1_o),
+      .spi_master_csn2_o(spi_master_csn2_o),
+      .spi_master_csn3_o(spi_master_csn3_o),
+      .spi_master_mode_o(spi_master_mode_o),
+      .spi_master_sdo0_o(spi_master_sdo0_o),
+      .spi_master_sdo1_o(spi_master_sdo1_o),
+      .spi_master_sdo2_o(spi_master_sdo2_o),
+      .spi_master_sdo3_o(spi_master_sdo3_o),
+      .spi_master_sdi0_i(spi_master_sdi0_i),
+      .spi_master_sdi1_i(spi_master_sdi1_i),
+      .spi_master_sdi2_i(spi_master_sdi2_i),
+      .spi_master_sdi3_i(spi_master_sdi3_i),
 
-    .scl_pad_i    (scl_pad_i),
-    .scl_pad_o    (scl_pad_o),
-    .scl_padoen_o (scl_padoen_o),
-    .sda_pad_i    (sda_pad_i),
-    .sda_pad_o    (sda_pad_o),
-    .sda_padoen_o (sda_padoen_o),
+      .scl_pad_i   (scl_pad_i),
+      .scl_pad_o   (scl_pad_o),
+      .scl_padoen_o(scl_padoen_o),
+      .sda_pad_i   (sda_pad_i),
+      .sda_pad_o   (sda_pad_o),
+      .sda_padoen_o(sda_padoen_o),
 
-    .uart_tx  (uart_tx), // o
-    .uart_rx  (uart_rx), // i
-    .uart_rts (),
-    .uart_dtr (),
-    .uart_cts (),
-    .uart_dsr (),
+      .uart_tx (uart_tx),  // o
+      .uart_rx (uart_rx),  // i
+      .uart_rts(),
+      .uart_dtr(),
+      .uart_cts(),
+      .uart_dsr(),
 
-    .gpio_in     (gpio_in),
-    .gpio_out    (gpio_out),
-    .gpio_dir    (gpio_dir),
-    .gpio_padcfg (),
+      .gpio_in    (gpio_in),
+      .gpio_out   (gpio_out),
+      .gpio_dir   (gpio_dir),
+      .gpio_padcfg(),
 
-    // JTAG signals
-    .tck_i   (tck_i),
-    .trstn_i (trstn_i),
-    .tms_i   (tms_i),
-    .tdi_i   (tdi_i),
-    .tdo_o   (tdo_o),
+      // JTAG signals
+      .tck_i  (tck_i),
+      .trstn_i(trstn_i),
+      .tms_i  (tms_i),
+      .tdi_i  (tdi_i),
+      .tdo_o  (tdo_o),
 
-    // PULPino specific pad config
-    .pad_cfg_o (),
-    .pad_mux_o ()
+      // PULPino specific pad config
+      .pad_cfg_o(),
+      .pad_mux_o(),
+
+      .acl_miso(acl_miso),
+      .acl_mosi(acl_mosi),
+      .acl_sclk(acl_sclk),
+      .acl_csn (acl_csn)
   );
 
 
