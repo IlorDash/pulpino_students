@@ -38,6 +38,7 @@
 #define I2C_BASE_ADDR                 ( SOC_PERIPHERALS_BASE_ADDR + 0x5000 )
 #define FLL_BASE_ADDR                 ( SOC_PERIPHERALS_BASE_ADDR + 0x6000 )
 #define SOC_CTRL_BASE_ADDR            ( SOC_PERIPHERALS_BASE_ADDR + 0x7000 )
+#define SPI_ACCEL_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x8000 )
 
 /** STDOUT */
 #define STDOUT_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x10000 )
@@ -82,6 +83,8 @@
 #define CGGI2C    0x06
 /** Clock gate FLL */
 #define CGFLL     0x07
+/** Clock gate SPI Accelerometer */
+#define CGSPI_ACCEL    0x08
 
 /** Boot address register */
 #define BOOTREG     __PSC__(0x08)

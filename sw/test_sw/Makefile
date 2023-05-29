@@ -24,6 +24,7 @@ BOARD_INCLUDE = ./includes/sys_lib/inc\
 BOOT_INCLUDE  = \
 
 OBJS = test_sw.o\
+	spi_accel.o\
 	./includes/sys_lib/src/spi.o\
 	./includes/sys_lib/src/gpio.o\
 	./includes/sys_lib/src/uart.o\
