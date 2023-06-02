@@ -528,17 +528,23 @@ module peripherals #(
   /// APB Slave 9: SPI Accelerometer cipher                      ///
   ///                                                            ///
   //////////////////////////////////////////////////////////////////
-  spi_accel_apt_wrapper spi_accel_apt_wrapper_i (
-      .clk_i(clk_int[8]),
-      .rstn_i(rst_n),
-      .apb_paddr_i(s_spi_accel_bus.paddr[31:0]),
-      .apb_pwdata_i(s_spi_accel_bus.pwdata),
-      .apb_pwrite_i(s_spi_accel_bus.pwrite),
-      .apb_psel_i(s_spi_accel_bus.psel),
-      .apb_penable_i(s_spi_accel_bus.penable),
-      .apb_prdata_o(s_spi_accel_bus.prdata),
-      .apb_pready_o(s_spi_accel_bus.pready),
-      .apb_pslverr_o(s_spi_accel_bus.pslverr),
+  spi_accel_apb_wrapper spi_accel_apb_wrapper_i (
+      .pclk_i(clk_int[8]),
+
+      .presetn_i(rst_n),
+
+      .paddr_i(s_spi_accel_bus.paddr[31:0]),
+
+      .psel_i(s_spi_accel_bus.psel),
+      .penable_i(s_spi_accel_bus.penable),
+      .pwrite_i(s_spi_accel_bus.pwrite),
+
+      .pwdata_i(s_spi_accel_bus.pwdata),
+
+      .pready_o(s_spi_accel_bus.pready),
+      .prdata_o(s_spi_accel_bus.prdata),
+      .pslverr_o(s_spi_accel_bus.pslverr),
+
       .ACL_MISO(acl_miso),
       .ACL_MOSI(acl_mosi),
       .ACL_SCLK(acl_sclk),
