@@ -1,5 +1,6 @@
-#include <spi_accel.h>
+#include "spi_accel.h"
 
+#define __riscv__
 #define DATA_READY_TIMEOUT 100000000
 
 volatile struct SPI_ACCEL_APB *spi_accel;

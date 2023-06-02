@@ -1,5 +1,5 @@
-#ifndef _CIPHER_H
-#define _CIPHER_H
+#ifndef _SPI_ACCEL_H
+#define _SPI_ACCEL_H
 
 #define DATA_HEX_NUM 4
 
