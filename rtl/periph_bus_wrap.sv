@@ -85,9 +85,9 @@ module periph_bus_wrap #(
   assign s_start_addr[8] = `DEBUG_START_ADDR;
   assign s_end_addr[8]   = `DEBUG_END_ADDR;
 
-  `APB_ASSIGN_MASTER(s_masters[8], spi_accel_master);
-  assign s_start_addr[8] = `SPI_ACCEL_START_ADDR;
-  assign s_end_addr[8]   = `SPI_ACCEL_END_ADDR;
+  `APB_ASSIGN_MASTER(s_masters[9], spi_accel_master);
+  assign s_start_addr[9] = `SPI_ACCEL_START_ADDR;
+  assign s_end_addr[9]   = `SPI_ACCEL_END_ADDR;
 
   //********************************************************
   //**************** SOC BUS *******************************
