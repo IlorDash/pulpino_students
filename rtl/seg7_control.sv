@@ -2,7 +2,7 @@
 
 /*
  * AN - Anode
- * CA - Cathode
+ * CATH - Cathode
  */
 
 `define AN_BIT_LEN 4
@@ -71,12 +71,15 @@ module seg7_control #(
         `AN_0: begin
           case (num[3:0])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
@@ -95,12 +98,15 @@ module seg7_control #(
         `AN_1: begin
           case (num[7:4])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
@@ -119,12 +125,15 @@ module seg7_control #(
         `AN_2: begin
           case (num[11:8])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
@@ -143,12 +152,15 @@ module seg7_control #(
         `AN_3: begin
           case (num[15:12])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
@@ -167,12 +179,15 @@ module seg7_control #(
         `AN_4: begin
           case (num[19:16])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
@@ -191,12 +206,15 @@ module seg7_control #(
         `AN_5: begin
           case (num[23:20])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
@@ -215,12 +233,15 @@ module seg7_control #(
         `AN_6: begin
           case (num[27:24])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
@@ -239,12 +260,15 @@ module seg7_control #(
         `AN_7: begin
           case (num[31:28])
             // Including cath
-            4'b1111: cath <= 7'b0001110;
-            4'b1110: cath <= 7'b0000110;
-            4'b1101: cath <= 7'b0100001;
-            4'b1100: cath <= 7'b1000110;
-            4'b1011: cath <= 7'b0000011;
-            4'b1010: cath <= 7'b0001000;
+            // 4'b1111: cath <= 7'b0001110;
+            // 4'b1110: cath <= 7'b0000110;
+            // 4'b1101: cath <= 7'b0100001;
+            // 4'b1100: cath <= 7'b1000110;
+            // 4'b1011: cath <= 7'b0000011;
+            // 4'b1010: cath <= 7'b0001000;
+
+            // Including minus
+            4'b1111: cath <= 7'b0111111;
 
             4'b1001: cath <= 7'b0010000;
             4'b1000: cath <= 7'b0000000;
