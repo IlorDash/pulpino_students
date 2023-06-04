@@ -100,7 +100,16 @@ module peripherals #(
     input  logic acl_miso,
     output logic acl_mosi,
     output logic acl_sclk,
-    output logic acl_csn
+    output logic acl_csn,
+
+    output logic ca,
+    output logic cb,
+    output logic cc,
+    output logic cd,
+    output logic ce,
+    output logic cf,
+    output logic cg,
+    output logic [7:0] an
 );
 
   localparam APB_ADDR_WIDTH = 32;
