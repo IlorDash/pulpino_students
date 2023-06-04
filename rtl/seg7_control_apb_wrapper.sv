@@ -12,7 +12,7 @@
 
 // Four bits are specifies one digit num, so we need 32 bits for 8 digits 
 
-`define NUM_TO_DISP_1 32'h0000
+`define NUM_TO_DISP 32'h0000
 `define RESET 32'h0004
 
 /*
@@ -74,7 +74,7 @@ module seg7_apb_wrapper (
   assign seg7_resetn = presetn_i && reset_reg[0];
 
   logic [`CATH_NUM-1:0] cath;
-  assign cath = {ca, cb, cc, cd, ce, cf, cg};
+  assign cath = {cg, cf, ce, cd, cc, cb, ca};
 
   seg7_control my_disp (
       .clk_i(pclk_i),
@@ -153,7 +153,7 @@ module seg7_apb_wrapper (
           num_reg[23:16] <= pwdata_i[2];
           num_reg[31:24] <= pwdata_i[3];
         end
-        `RESET_REG: begin
+        `RESET: begin
           reset_reg[7:0]   <= pwdata_i[0];
           reset_reg[15:8]  <= pwdata_i[1];
           reset_reg[23:16] <= pwdata_i[2];
@@ -161,7 +161,7 @@ module seg7_apb_wrapper (
         end
         default: begin
           num_reg <= 32'b0;
-          reset   <= 32'b0;
+          reset_reg   <= 32'b0;
         end
       endcase
     end
