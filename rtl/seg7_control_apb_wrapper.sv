@@ -2,9 +2,9 @@
 
 //***********************************
 // Address space
-//  Using 5 WORDS
-//  0x80001000 - nums to disp on LEDs
-//  0x80001004 - controller reset: 0x00-0x07 -> 0x00, 0x08 -> 0xFF, 0x09 -> 0xFF
+//  Using 2 WORDS
+//  0x0000 - nums to disp on LEDs
+//  0x0004 - controller reset: 0x00-0x07 -> 0x00, 0x08 -> 0xFF, 0x09 -> 0xFF
 
 // Bytes addressing in words
 //  _ _ _ _ | _ _ _ _ |
@@ -71,7 +71,7 @@ module seg7_apb_wrapper (
   /////////////////////////////////////
 
   logic seg7_resetn;
-  assign seg7_resetn = presetn_i & reset_reg;
+  assign seg7_resetn = presetn_i && reset_reg[0];
 
   logic [`CATH_NUM-1:0] cath;
   assign cath = {ca, cb, cc, cd, ce, cf, cg};
