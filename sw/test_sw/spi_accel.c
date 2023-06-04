@@ -5,7 +5,7 @@
 
 volatile struct SPI_ACCEL_APB *spi_accel;
 
-int spi_accel_get_data(struct spi_accel_data *data)
+int spi_accel_get_data(struct spi_accel_regs *data)
 {
     int cntr = 0;
     while ((!spi_accel->DATA_READY) && (cntr < DATA_READY_TIMEOUT))
