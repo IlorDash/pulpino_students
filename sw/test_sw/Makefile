@@ -25,6 +25,7 @@ BOOT_INCLUDE  = \
 
 OBJS = test_sw.o\
 	spi_accel.o\
+	seg7_control.o\
 	./includes/sys_lib/src/spi.o\
 	./includes/sys_lib/src/gpio.o\
 	./includes/sys_lib/src/uart.o\

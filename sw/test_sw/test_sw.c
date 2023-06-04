@@ -1,6 +1,6 @@
 
 #define __riscv__
-#define LED_DELAY 100000000
+#define LED_DELAY 10000
 #define ACCEL_DATA_STR_LEN 32
 
 // #include <spi.h>
@@ -11,6 +11,7 @@
 // #include <utils.h>
 #include <pulpino.h>
 #include "spi_accel.h"
+#include "seg7_control.h"
 
 int intToString(int n, char *buffer)
 {
@@ -194,21 +195,30 @@ int main()
 
   uart_set_cfg(0, 325); // 9600 baud UART, no parity (50MHz CPU)
 
-  uart_send("Hello world!\n", 13); // 13 is a number of chars sent: 12 + "\n"
+  uart_send("Hello world YEA!\n", 17); // + "\n"
   uart_wait_tx_done();
 
   set_pin_function(31, FUNC_GPIO);
   set_gpio_pin_direction(31, DIR_OUT);
-
   set_gpio_pin_value(31, 0);
 
   spi_accel_init();
+  uart_send("Init SPI Accelerometer\n", 23);
+  uart_wait_tx_done();
+
+  seg7_control_init();
+  uart_send("Init 7 segment controller\n", 26);
+  uart_wait_tx_done();
 
   int i = 0;
+  int8_t seg7_nums[NUMS_TO_DISP_NUM];
+
+  uart_send("Succesfully initialized\n", 24);
+  uart_wait_tx_done();
 
   while (1)
   {
-    set_gpio_pin_value(31, 0);
+    set_gpio_pin_value(31, 1);
     for (int j = 0; j < LED_DELAY; j++)
     {
 // wait some time
@@ -217,27 +227,37 @@ int main()
 #else
       asm volatile("l.nop");
 #endif
+      if (!(j % 1000))
+      {
+        uart_send(".", 1);
+        uart_wait_tx_done();
+      }
     }
-    set_gpio_pin_value(31, 1);
+    uart_send("\n", 1);
+    uart_wait_tx_done();
+    set_gpio_pin_value(31, 0);
 
     ret = spi_accel_get_data(&accel_data_regs);
     if (ret != 0)
     {
       uart_send("Failed get accelerometer data!\n", 31);
+      uart_wait_tx_done();
       continue;
     }
 
-    if (i % 100)
+    if (!(i % 1))
     {
       /* Send Accelerometer RAW data in HEX to UART */
       // ret = accel_data_to_string(accel_data_regs, accel_data_uart);
       // if (ret == 0)
       // {
       //   uart_send(accel_data_uart, ACCEL_DATA_STR_LEN);
+      //   uart_wait_tx_done();
       // }
       // else
       // {
       //   uart_send("Failed convert accelerometer data to string!\n", 45);
+      //   uart_wait_tx_done();
       // }
 
       /* Send Accelerometer recalculated data to UART */
@@ -258,8 +278,14 @@ int main()
       data_uart_pos += intToString(accel_data.y, &accel_data_uart[data_uart_pos]);
       strcpy(&accel_data_uart[data_uart_pos], " Z: ");
       data_uart_pos += 4;
-      intToString(accel_data.z, &accel_data_uart[data_uart_pos]);
-      uart_send(accel_data_uart, ACCEL_DATA_STR_LEN);
+      data_uart_pos += intToString(accel_data.z, &accel_data_uart[data_uart_pos]);
+      uart_send(accel_data_uart, data_uart_pos);
+      uart_wait_tx_done();
+
+      seg7_nums[0] = accel_data.x;
+      seg7_nums[1] = accel_data.y;
+      seg7_nums[2] = accel_data.z;
+      seg7_control_set_nums(seg7_nums);
     }
 
     i++;
