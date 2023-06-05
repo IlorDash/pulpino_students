@@ -2,7 +2,7 @@
 
 volatile struct SEG7_CONTROL_APB *seg7_control;
 
-void seg7_control_set_nums(int8_t nums[])
+int seg7_control_set_nums(int8_t nums[])
 {
     int nums_in_octets = 0;
     for (int i = 0; i < NUMS_TO_DISP_NUM; i++)
@@ -16,7 +16,6 @@ void seg7_control_set_nums(int8_t nums[])
             }
             // Left shift by 24, 12, 0 bits in order to leave empty octets for spaces
             nums_in_octets |= (0xf0 | (nums[i] & 0xf)) << (8 * (NUMS_TO_DISP_NUM - i) - 4 * i);
-            printf("-) %d %x; %x\n", nums[i], (nums[i] & 0xf), nums_in_octets);
             continue;
         }
 
@@ -26,10 +25,10 @@ void seg7_control_set_nums(int8_t nums[])
         }
         // Left shift by 24, 12, 0 bits in order to leave empty octets for spaces
         nums_in_octets |= ((((nums[i] / 10) & 0xf) << 4) | ((nums[i] % 10) & 0xf)) << (8 * (NUMS_TO_DISP_NUM - i) - 4 * i);
-        printf("+) %d; %x\n", nums[i], nums_in_octets);
     }
 
     seg7_control->NUM = nums_in_octets;
+    return nums_in_octets;
 }
 
 void seg7_control_init(void)

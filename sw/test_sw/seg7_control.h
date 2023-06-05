@@ -13,6 +13,6 @@ __attribute__((packed)) struct SEG7_CONTROL_APB
 };
 
 void seg7_control_init(void);
-void seg7_control_disp_nums(int8_t nums[]);
+int seg7_control_disp_nums(int8_t nums[]);
 
 #endif
