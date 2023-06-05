@@ -20,7 +20,7 @@
 
 
 module seg7_control #(
-    parameter CLK_DIV = 500
+    parameter CLK_DIV = 8000
 ) (
     input clk_i,
     input [(`AN_NUM * `AN_BIT_LEN)-1:0] num,
@@ -29,7 +29,7 @@ module seg7_control #(
     output logic [`AN_NUM-1:0] an
 );
 
-  logic [11:0] clk_cntr = 0;
+  logic [12:0] clk_cntr = 0;
 
   initial begin
     an <= 8'hff;
