@@ -1,7 +1,8 @@
 
 #define __riscv__
-#define LED_DELAY 10000
+#define LED_DELAY 1000000
 #define ACCEL_DATA_STR_LEN 32
+#define SEG7_DATA_STR_LEN 10
 
 // #include <spi.h>
 #include <gpio.h>
@@ -13,7 +14,7 @@
 #include "spi_accel.h"
 #include "seg7_control.h"
 
-int intToString(int n, char *buffer)
+int int_to_string(int n, char *buffer)
 {
   int i = 0;
 
@@ -79,30 +80,43 @@ char int_to_hex(int num)
   }
 }
 
-void insert_char(int *data, char *str, const int str_cntr)
+void reverse_str(char *str, int str_len)
 {
-  int hex_digit = *data & 0x0000000f;
+  int i;
+  char tmp;
+  for (i = 0; i < (str_len / 2); i++)
+  {
+    tmp = str[i];
+    str[i] = str[str_len - i - 1];
+    str[str_len - i - 1] = tmp;
+  }
+}
+
+void insert_char(int *data, char *str)
+{
+  int hex_digit = *data & 0xf;
   if (hex_digit > 9)
   {
-    str[str_cntr] = int_to_hex(hex_digit);
+    str[0] = int_to_hex(hex_digit);
   }
   else
   {
-    str[str_cntr] = hex_digit + '0';
+    str[0] = hex_digit + '0';
   }
   *data = *data >> 4;
 }
 
-void reverse_str(char *str)
+int hex_to_str(int hex, int hex_len, char *str)
 {
   int i;
-  char tmp;
-  for (i = 0; i < (DATA_HEX_NUM / 2); i++)
+  int str_cntr = 0;
+  for (i = 0; i < hex_len; i++)
   {
-    tmp = str[i];
-    str[i] = str[DATA_HEX_NUM - i - 1];
-    str[DATA_HEX_NUM - i - 1] = tmp;
+    insert_char(&hex, &str[str_cntr]);
+    str_cntr++;
   }
+  reverse_str(str, hex_len);
+  return str_cntr;
 }
 
 int accel_data_to_string(struct spi_accel_regs accel, char *str)
@@ -123,12 +137,7 @@ int accel_data_to_string(struct spi_accel_regs accel, char *str)
   str_cntr++;
 
   // extract data X
-  for (i = 0; i < DATA_HEX_NUM; i++)
-  {
-    insert_char(&accel.data_x, str, str_cntr);
-    str_cntr++;
-  }
-  reverse_str(&str[str_cntr - DATA_HEX_NUM]);
+  str_cntr += hex_to_str(accel.data_x, DATA_HEX_NUM, &str[str_cntr]);
   str[str_cntr] = ' ';
   str_cntr++;
 
@@ -144,12 +153,7 @@ int accel_data_to_string(struct spi_accel_regs accel, char *str)
   str_cntr++;
 
   // extract data Y
-  for (i = 0; i < DATA_HEX_NUM; i++)
-  {
-    insert_char(&accel.data_y, str, str_cntr);
-    str_cntr++;
-  }
-  reverse_str(&str[str_cntr - DATA_HEX_NUM]);
+  str_cntr += hex_to_str(accel.data_y, DATA_HEX_NUM, &str[str_cntr]);
   str[str_cntr] = ' ';
   str_cntr++;
 
@@ -165,12 +169,7 @@ int accel_data_to_string(struct spi_accel_regs accel, char *str)
   str_cntr++;
 
   // extract data Z
-  for (i = 0; i < DATA_HEX_NUM; i++)
-  {
-    insert_char(&accel.data_z, str, str_cntr);
-    str_cntr++;
-  }
-  reverse_str(&str[str_cntr - DATA_HEX_NUM]);
+  str_cntr += hex_to_str(accel.data_z, DATA_HEX_NUM, &str[str_cntr]);
   str[str_cntr] = ' ';
 
   str_cntr++;
@@ -180,17 +179,76 @@ int accel_data_to_string(struct spi_accel_regs accel, char *str)
   }
 
   str[str_cntr] = '\n';
-  str[str_cntr + 1] = '\0';
-  return 0;
+  str_cntr++;
+  str[str_cntr] = '\0';
+  return str_cntr;
+}
+
+void send_accel_raw_data(struct spi_accel_regs accel_data_regs)
+{
+  int ret;
+  char accel_data_uart[ACCEL_DATA_STR_LEN] = {0};
+
+  ret = accel_data_to_string(accel_data_regs, accel_data_uart);
+  if (ret > 0)
+  {
+    uart_send(accel_data_uart, ret);
+    uart_wait_tx_done();
+  }
+  else
+  {
+    uart_send("Failed convert accelerometer data to string!\n", 45);
+    uart_wait_tx_done();
+  }
+}
+
+struct spi_accel_real_data get_spi_accel_real_data(struct spi_accel_regs raw_data)
+{
+  int16_t raw_accel_data;
+  struct spi_accel_real_data accel_data;
+  char accel_data_uart[ACCEL_DATA_STR_LEN] = {0};
+  uint8_t str_pos;
+  raw_accel_data = (int16_t)(raw_data.data_x & 0xffff);
+  accel_data.x = raw_accel_data / (1000 / (RANGE / 2));
+
+  raw_accel_data = (int16_t)(raw_data.data_y & 0xffff);
+  accel_data.y = raw_accel_data / (1000 / (RANGE / 2));
+
+  raw_accel_data = (int16_t)(raw_data.data_z & 0xffff);
+  accel_data.z = raw_accel_data / (1000 / (RANGE / 2));
+  return accel_data;
+}
+
+void send_accel_real_data(struct spi_accel_regs raw_data)
+{
+  struct spi_accel_real_data accel_data;
+  char accel_data_uart[ACCEL_DATA_STR_LEN] = {0};
+  uint8_t str_pos;
+  accel_data = get_spi_accel_real_data(raw_data);
+
+  strcpy(accel_data_uart, "X: ");
+  str_pos = 3;
+  str_pos += int_to_string((int)accel_data.x, &accel_data_uart[str_pos]);
+  strcpy(&accel_data_uart[str_pos], " Y: ");
+  str_pos += 4;
+  str_pos += int_to_string((int)accel_data.y, &accel_data_uart[str_pos]);
+  strcpy(&accel_data_uart[str_pos], " Z: ");
+  str_pos += 4;
+  str_pos += int_to_string((int)accel_data.z, &accel_data_uart[str_pos]);
+  strcpy(&accel_data_uart[str_pos], "\0");
+  uart_send(accel_data_uart, str_pos);
+  uart_wait_tx_done();
+
+  uart_send("\n", 1);
+  uart_wait_tx_done();
 }
 
 int main()
 {
   struct spi_accel_regs accel_data_regs;
-  char accel_data_uart[ACCEL_DATA_STR_LEN] = {0};
-  int ret;
-  uint16_t raw_accel_data;
   struct spi_accel_real_data accel_data;
+  int ret;
+
   uint8_t data_uart_pos;
 
   uart_set_cfg(0, 325); // 9600 baud UART, no parity (50MHz CPU)
@@ -212,6 +270,8 @@ int main()
 
   int i = 0;
   int8_t seg7_nums[NUMS_TO_DISP_NUM];
+  int seg7_cntr = 0;
+  char seg7_uart[SEG7_DATA_STR_LEN] = {0};
 
   uart_send("Succesfully initialized\n", 24);
   uart_wait_tx_done();
@@ -227,7 +287,7 @@ int main()
 #else
       asm volatile("l.nop");
 #endif
-      if (!(j % 1000))
+      if (!(j % 100000))
       {
         uart_send(".", 1);
         uart_wait_tx_done();
@@ -247,47 +307,27 @@ int main()
 
     if (!(i % 1))
     {
-      /* Send Accelerometer RAW data in HEX to UART */
-      // ret = accel_data_to_string(accel_data_regs, accel_data_uart);
-      // if (ret == 0)
-      // {
-      //   uart_send(accel_data_uart, ACCEL_DATA_STR_LEN);
-      //   uart_wait_tx_done();
-      // }
-      // else
-      // {
-      //   uart_send("Failed convert accelerometer data to string!\n", 45);
-      //   uart_wait_tx_done();
-      // }
+      send_accel_raw_data(accel_data_regs);
+      send_accel_real_data(accel_data_regs);
 
-      /* Send Accelerometer recalculated data to UART */
-      raw_accel_data = (int16_t)(accel_data_regs.data_x & 0xffff);
-      accel_data.x = raw_accel_data / (1000 / (RANGE / 2));
-
-      raw_accel_data = (int16_t)(accel_data_regs.data_y & 0xffff);
-      accel_data.y = raw_accel_data / (1000 / (RANGE / 2));
-
-      raw_accel_data = (int16_t)(accel_data_regs.data_z & 0xffff);
-      accel_data.z = raw_accel_data / (1000 / (RANGE / 2));
-
-      strcpy(accel_data_uart, "X: ");
-      data_uart_pos = 3;
-      data_uart_pos += intToString(accel_data.x, &accel_data_uart[data_uart_pos]);
-      strcpy(&accel_data_uart[data_uart_pos], " Y: ");
-      data_uart_pos += 4;
-      data_uart_pos += intToString(accel_data.y, &accel_data_uart[data_uart_pos]);
-      strcpy(&accel_data_uart[data_uart_pos], " Z: ");
-      data_uart_pos += 4;
-      data_uart_pos += intToString(accel_data.z, &accel_data_uart[data_uart_pos]);
-      uart_send(accel_data_uart, data_uart_pos);
-      uart_wait_tx_done();
-
+      accel_data = get_spi_accel_real_data(accel_data_regs);
       seg7_nums[0] = accel_data.x;
       seg7_nums[1] = accel_data.y;
       seg7_nums[2] = accel_data.z;
-      seg7_control_set_nums(seg7_nums);
-    }
 
+      uart_send("Segments octets ", 16);
+      uart_wait_tx_done();
+
+      int seg7_octets = seg7_control_set_nums(seg7_nums);
+      seg7_cntr += hex_to_str(seg7_octets, 8, seg7_uart);
+      seg7_uart[seg7_cntr] = "\0";
+
+      uart_send(seg7_uart, seg7_cntr);
+      uart_wait_tx_done();
+
+      uart_send("\n", 1);
+      uart_wait_tx_done();
+    }
     i++;
   }
 }
