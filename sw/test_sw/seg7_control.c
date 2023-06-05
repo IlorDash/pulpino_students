@@ -36,4 +36,8 @@ void seg7_control_init(void)
     CGREG |= (1 << CGSPI_SEG7_CONTROL);
     seg7_control = (struct SEG7_CONTROL_APB *)(SEG7_CONTROL_BASE_ADDR);
     seg7_control->RESET = 1;
+    for (int i = 0; i < 100; i++)
+    {
+    }
+    seg7_control->RESET = 0;
 }

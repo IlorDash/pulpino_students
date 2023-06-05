@@ -71,7 +71,7 @@ module seg7_apb_wrapper (
   /////////////////////////////////////
 
   logic seg7_resetn;
-  assign seg7_resetn = presetn_i && reset_reg[0];
+  assign seg7_resetn = presetn_i && ~reset_reg[0];
 
   logic [`CATH_NUM-1:0] cath;
   assign cath = {cg, cf, ce, cd, cc, cb, ca};
@@ -145,6 +145,7 @@ module seg7_apb_wrapper (
 
   // WRITE REGS
   always_ff @(posedge penable_i) begin
+    pslverr_o <= 0;
     if (penable_i && pwrite_i) begin
       case (paddr_i)
         `NUM_TO_DISP: begin
