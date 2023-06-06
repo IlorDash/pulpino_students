@@ -601,7 +601,7 @@ module peripherals #(
   //////////////////////////////////////////////////////////////////
 
   aud_pwm_apb_wrapper aud_pwm_apb_wrapper_i (
-      .pclk_i(clk_int[11]),
+      .pclk_i(clk_int[10]),
 
       .presetn_i(rst_n),
 
