@@ -13,6 +13,7 @@
 #include <pulpino.h>
 #include "spi_accel.h"
 #include "seg7_control.h"
+#include "aud_pwm.h"
 
 int int_to_string(int n, char *buffer)
 {
@@ -268,6 +269,10 @@ int main()
   uart_send("Init 7 segment controller\n", 26);
   uart_wait_tx_done();
 
+  aud_pwm_init();
+  uart_send("Init Aud PWM\n", 13);
+  uart_wait_tx_done();
+
   int i = 0;
   int8_t seg7_nums[NUMS_TO_DISP_NUM];
   int seg7_cntr = 0;
@@ -275,6 +280,10 @@ int main()
 
   uart_send("Succesfully initialized\n", 24);
   uart_wait_tx_done();
+
+  uart_send("Playing music\n", 14);
+  uart_wait_tx_done();
+  aud_pwm_start();
 
   while (1)
   {
@@ -305,29 +314,36 @@ int main()
       continue;
     }
 
-    if (!(i % 1))
-    {
-      send_accel_raw_data(accel_data_regs);
-      send_accel_real_data(accel_data_regs);
+    send_accel_raw_data(accel_data_regs);
+    send_accel_real_data(accel_data_regs);
 
-      accel_data = get_spi_accel_real_data(accel_data_regs);
-      seg7_nums[0] = accel_data.x;
-      seg7_nums[1] = accel_data.y;
-      seg7_nums[2] = accel_data.z;
+    accel_data = get_spi_accel_real_data(accel_data_regs);
+    seg7_nums[0] = accel_data.x;
+    seg7_nums[1] = accel_data.y;
+    seg7_nums[2] = accel_data.z;
 
-      uart_send("Segments octets ", 16);
-      uart_wait_tx_done();
+    // if ((accel_data.x > 10))
+    // {
+    //   /* code */
+    // }
 
-      int seg7_octets = seg7_control_set_nums(seg7_nums);
-      seg7_cntr += hex_to_str(seg7_octets, 8, seg7_uart);
-      seg7_uart[seg7_cntr] = "\0";
+    // uart_send("Playing music\n", 14);
+    // uart_wait_tx_done();
+    // aud_pwm_start();
 
-      uart_send(seg7_uart, seg7_cntr);
-      uart_wait_tx_done();
+    uart_send("Segments octets ", 16);
+    uart_wait_tx_done();
 
-      uart_send("\n", 1);
-      uart_wait_tx_done();
-    }
+    int seg7_octets = seg7_control_set_nums(seg7_nums);
+    seg7_cntr += hex_to_str(seg7_octets, 8, seg7_uart);
+    seg7_uart[8] = "\0";
+
+    uart_send(seg7_uart, 8);
+    uart_wait_tx_done();
+
+    uart_send("\n", 1);
+    uart_wait_tx_done();
+
     i++;
   }
 }

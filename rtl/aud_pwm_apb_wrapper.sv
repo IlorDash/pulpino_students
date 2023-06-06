@@ -44,14 +44,14 @@ module aud_pwm_apb_wrapper (
   /////////////////////////////////////
 
   logic aud_start;
-  assign aud_start = &start_reg;
+  assign aud_start = start_reg[0];
 
   logic aud_rstn;
   assign aud_rstn = ~rst_reg[0];
 
   aud_pwm audpwm (
       .clk(pclk_i),
-      .rstn(aud_rstn),
+      .resetn(aud_rstn),
       .start(aud_start),
       .aud_pwm(aud_pwm)
   );

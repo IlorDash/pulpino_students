@@ -51,6 +51,7 @@ always_ff @(posedge clkd, negedge resetn) begin
                     state = PLAY;
                 end else begin
                     state = IDLE;
+                    index = 0;
                 end
             end
             PLAY: begin
