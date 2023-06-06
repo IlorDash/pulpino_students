@@ -33,7 +33,7 @@ logic [2:0] state;
 parameter IDLE = 0, READ = 1, PLAY = 2;
 parameter MUSIC_LEN = 190000;
 
-always_ff @(posedge clkd, negedge CPU_RESETN) begin
+always_ff @(posedge clkd, negedge resetn) begin
     if (!resetn) begin
         state = IDLE;
         count = 0;
