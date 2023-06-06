@@ -25,7 +25,9 @@ module pulpino_nexys_a7 #(
     output logic ce,
     output logic cf,
     output logic cg,
-    output logic [7:0] an
+    output logic [7:0] an,
+
+    output logic aud_pwm
 );
 
   // Clock and reset +
@@ -266,7 +268,9 @@ module pulpino_nexys_a7 #(
       .ce(ce),
       .cf(cf),
       .cg(cg),
-      .an(an)
+      .an(an),
+
+      .aud_pwm(aud_pwm)
   );
 
 

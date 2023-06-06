@@ -107,7 +107,9 @@ module pulpino_top #(
     output logic ce,
     output logic cf,
     output logic cg,
-    output logic [7:0] an
+    output logic [7:0] an,
+
+    output logic aud_pwm
 );
 
   logic        clk_int;
@@ -303,7 +305,9 @@ module pulpino_top #(
       .ce(ce),
       .cf(cf),
       .cg(cg),
-      .an(an)
+      .an(an),
+
+      .aud_pwm(aud_pwm)
   );
 
 

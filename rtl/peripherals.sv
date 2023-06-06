@@ -109,7 +109,9 @@ module peripherals #(
     output logic ce,
     output logic cf,
     output logic cg,
-    output logic [7:0] an
+    output logic [7:0] an,
+
+    output logic aud_pwm
 );
 
   localparam APB_ADDR_WIDTH = 32;
