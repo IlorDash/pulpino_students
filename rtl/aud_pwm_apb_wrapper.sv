@@ -37,19 +37,24 @@ module aud_pwm_apb_wrapper (
   ///////////////
 
   logic [31:0] start_reg;
+  logic [31:0] rst_reg;
 
   /////////////////////////////////////
   // SPI Accelerometer instantiation //
   /////////////////////////////////////
 
-  aud_pwm audpwm (
-    .clk(pclk_i),
-    .rstn(presetn_i),
-    .start(start_reg[0]),
-    .aud_pwm(aud_pwm)
-  );
+  logic aud_start;
+  assign aud_start = &start_reg;
 
-  // Data Ready Reg
+  logic aud_rstn;
+  assign aud_rstn = presetn_i && ~rst_reg[0];
+
+  aud_pwm audpwm (
+      .clk(pclk_i),
+      .rstn(aud_rstn),
+      .start(aud_start),
+      .aud_pwm(aud_pwm)
+  );
 
   // Control
 
@@ -59,6 +64,7 @@ module aud_pwm_apb_wrapper (
 
   logic psel_prev;
 
+
   typedef enum {
     NONE = 0,
     PENABLE = 1,
@@ -66,8 +72,9 @@ module aud_pwm_apb_wrapper (
     PSEL_PREV = 3,
     ADDRES = 4,
     READ_ONLY = 5,
-    REQUEST = 6,
-    MISALIGN = 7
+    WRITE_ONLY = 6,
+    REQUEST = 7,
+    MISALIGN = 8
   } pslverr_causes_t;
 
   logic [2:0] pslverr_status;
@@ -98,13 +105,41 @@ module aud_pwm_apb_wrapper (
       pslverr_status <= ADDRES;
     end
 
+    if ((paddr_i <= `RESET) && ~pwrite_i && psel_i) begin  // Read from write-only register
+      pslverr_o <= 1;
+      pslverr_status <= WRITE_ONLY;
+    end
+
     if (paddr_i[1:0]) begin  // Misaligned address
       pslverr_o <= 1;
       pslverr_status <= MISALIGN;
     end
   end
 
-  logic read_data_ready;
+  // WRITE REGS
+  always_ff @(posedge penable_i) begin
+    pslverr_o <= 0;
+    if (penable_i && pwrite_i) begin
+      case (paddr_i)
+        `START: begin
+          start_reg[7:0]   <= pwdata_i[0];
+          start_reg[15:8]  <= pwdata_i[1];
+          start_reg[23:16] <= pwdata_i[2];
+          start_reg[31:24] <= pwdata_i[3];
+        end
+        `RST: begin
+          rst_reg[7:0]   <= pwdata_i[0];
+          rst_reg[15:8]  <= pwdata_i[1];
+          rst_reg[23:16] <= pwdata_i[2];
+          rst_reg[31:24] <= pwdata_i[3];
+        end
+        default: begin
+          start_reg <= 32'b0;
+          rst_reg   <= 32'b0;
+        end
+      endcase
+    end
+  end
 
 endmodule
 

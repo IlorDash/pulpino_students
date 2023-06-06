@@ -115,7 +115,7 @@ module peripherals #(
 );
 
   localparam APB_ADDR_WIDTH = 32;
-  localparam APB_NUM_SLAVES = 10;
+  localparam APB_NUM_SLAVES = 11;
 
   APB_BUS s_apb_bus ();
 
@@ -130,6 +130,7 @@ module peripherals #(
   APB_BUS s_debug_bus ();
   APB_BUS s_spi_accel_bus ();
   APB_BUS s_seg7_control_bus ();
+  APB_BUS s_aud_pwm_bus ();
 
   logic [ 1:0] s_spim_event;
   logic [ 3:0] timer_irq;
@@ -236,7 +237,8 @@ module peripherals #(
       .soc_ctrl_master  (s_soc_ctrl_bus),
       .debug_master     (s_debug_bus),
       .spi_accel_master (s_spi_accel_bus),
-      .seg7_control     (s_seg7_control_bus)
+      .seg7_control     (s_seg7_control_bus),
+      .aud_pwm          (s_aud_pwm_bus)
   );
 
   //////////////////////////////////////////////////////////////////
@@ -591,4 +593,31 @@ module peripherals #(
       .cg(cg),
       .an(an)
   );
+
+  //////////////////////////////////////////////////////////////////
+  ///                                                            ///
+  /// APB Slave 11: Audio PWM                                    ///
+  ///                                                            ///
+  //////////////////////////////////////////////////////////////////
+
+  aud_pwm_apb_wrapper aud_pwm_apb_wrapper_i (
+      .pclk_i(clk_int[11]),
+
+      .presetn_i(rst_n),
+
+      .paddr_i(s_aud_pwm_bus.paddr[31:0]),
+
+      .psel_i(s_aud_pwm_bus.psel),
+      .penable_i(s_aud_pwm_bus.penable),
+      .pwrite_i(s_aud_pwm_bus.pwrite),
+
+      .pwdata_i(s_aud_pwm_bus.pwdata),
+
+      .pready_o (s_aud_pwm_bus.pready),
+      .prdata_o (s_aud_pwm_bus.prdata),
+      .pslverr_o(s_aud_pwm_bus.pslverr),
+
+      .aud_pwm(aud_pwm)
+  );
+
 endmodule

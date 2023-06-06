@@ -29,7 +29,8 @@ module periph_bus_wrap #(
     APB_BUS.Master soc_ctrl_master,
     APB_BUS.Master debug_master,
     APB_BUS.Master spi_accel_master,
-    APB_BUS.Master seg7_control
+    APB_BUS.Master seg7_control,
+    APB_BUS.Master aud_pwm
 
 );
 
@@ -93,6 +94,10 @@ module periph_bus_wrap #(
   `APB_ASSIGN_MASTER(s_masters[10], seg7_control);
   assign s_start_addr[10] = `SEG7_CONTROL_START_ADDR;
   assign s_end_addr[10]   = `SEG7_CONTROL_END_ADDR;
+
+  `APB_ASSIGN_MASTER(s_masters[11], aud_pwm);
+  assign s_start_addr[11] = `AUD_PWM_START_ADDR;
+  assign s_end_addr[11]   = `AUD_PWM_END_ADDR;
 
 
   //********************************************************
