@@ -40,6 +40,7 @@
 #define SOC_CTRL_BASE_ADDR            ( SOC_PERIPHERALS_BASE_ADDR + 0x7000 )
 #define SPI_ACCEL_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x8000 )
 #define SEG7_CONTROL_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x9000 )
+#define AUD_PWM_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0xA000 )
 
 /** STDOUT */
 #define STDOUT_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x10000 )
@@ -88,6 +89,8 @@
 #define CGSPI_ACCEL    0x08
 /** Clock gate 7 segment controller */
 #define CGSPI_SEG7_CONTROL   0x09
+/** Clock gate aud_pwm */
+#define CGAUD_PWM   0x0A
 
 /** Boot address register */
 #define BOOTREG     __PSC__(0x08)
