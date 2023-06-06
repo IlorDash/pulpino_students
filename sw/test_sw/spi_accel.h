@@ -2,6 +2,7 @@
 #define _SPI_ACCEL_H
 
 #define DATA_HEX_NUM 4
+#define RANGE 2 // in g
 
 #include <pulpino.h>
 #include <stdint.h>
@@ -15,11 +16,18 @@ __attribute__((packed)) struct SPI_ACCEL_APB
     uint32_t DATA_READY; // 0xc
 };
 
-struct spi_accel_data
+struct spi_accel_regs
 {
     uint32_t data_x;
     uint32_t data_y;
     uint32_t data_z;
+};
+
+struct spi_accel_real_data
+{
+    int16_t x;
+    int16_t y;
+    int16_t z;
 };
 
 // Cipher registers
@@ -29,6 +37,6 @@ struct spi_accel_data
 #define SPI_ACCEL_DATA_READY 0xc
 
 void spi_accel_init(void);
-int spi_accel_get_data(struct spi_accel_data *data);
+int spi_accel_get_data(struct spi_accel_regs *data);
 
 #endif

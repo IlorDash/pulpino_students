@@ -100,11 +100,20 @@ module peripherals #(
     input  logic acl_miso,
     output logic acl_mosi,
     output logic acl_sclk,
-    output logic acl_csn
+    output logic acl_csn,
+
+    output logic ca,
+    output logic cb,
+    output logic cc,
+    output logic cd,
+    output logic ce,
+    output logic cf,
+    output logic cg,
+    output logic [7:0] an
 );
 
   localparam APB_ADDR_WIDTH = 32;
-  localparam APB_NUM_SLAVES = 9;
+  localparam APB_NUM_SLAVES = 10;
 
   APB_BUS s_apb_bus ();
 
@@ -118,6 +127,7 @@ module peripherals #(
   APB_BUS s_soc_ctrl_bus ();
   APB_BUS s_debug_bus ();
   APB_BUS s_spi_accel_bus ();
+  APB_BUS s_seg7_control_bus ();
 
   logic [ 1:0] s_spim_event;
   logic [ 3:0] timer_irq;
@@ -223,7 +233,8 @@ module peripherals #(
       .fll_master       (s_fll_bus),
       .soc_ctrl_master  (s_soc_ctrl_bus),
       .debug_master     (s_debug_bus),
-      .spi_accel_master (s_spi_accel_bus)
+      .spi_accel_master (s_spi_accel_bus),
+      .seg7_control     (s_seg7_control_bus)
   );
 
   //////////////////////////////////////////////////////////////////
@@ -541,13 +552,41 @@ module peripherals #(
 
       .pwdata_i(s_spi_accel_bus.pwdata),
 
-      .pready_o(s_spi_accel_bus.pready),
-      .prdata_o(s_spi_accel_bus.prdata),
+      .pready_o (s_spi_accel_bus.pready),
+      .prdata_o (s_spi_accel_bus.prdata),
       .pslverr_o(s_spi_accel_bus.pslverr),
 
       .ACL_MISO(acl_miso),
       .ACL_MOSI(acl_mosi),
       .ACL_SCLK(acl_sclk),
-      .ACL_CSN(acl_csn)
+      .ACL_CSN (acl_csn)
+  );
+
+  seg7_apb_wrapper seg7_apb_wrapper_i (
+
+      .pclk_i(clk_int[9]),
+
+      .presetn_i(rst_n),
+
+      .paddr_i(s_seg7_control_bus.paddr[31:0]),
+
+      .psel_i(s_seg7_control_bus.psel),
+      .penable_i(s_seg7_control_bus.penable),
+      .pwrite_i(s_seg7_control_bus.pwrite),
+
+      .pwdata_i(s_seg7_control_bus.pwdata),
+
+      .pready_o (s_seg7_control_bus.pready),
+      .prdata_o (s_seg7_control_bus.prdata),
+      .pslverr_o(s_seg7_control_bus.pslverr),
+
+      .ca(ca),
+      .cb(cb),
+      .cc(cc),
+      .cd(cd),
+      .ce(ce),
+      .cf(cf),
+      .cg(cg),
+      .an(an)
   );
 endmodule

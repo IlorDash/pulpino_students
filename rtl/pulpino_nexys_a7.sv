@@ -16,7 +16,16 @@ module pulpino_nexys_a7 #(
     input  logic acl_miso,
     output logic acl_mosi,
     output logic acl_sclk,
-    output logic acl_csn
+    output logic acl_csn,
+
+    output logic ca,
+    output logic cb,
+    output logic cc,
+    output logic cd,
+    output logic ce,
+    output logic cf,
+    output logic cg,
+    output logic [7:0] an
 );
 
   // Clock and reset +
@@ -248,7 +257,16 @@ module pulpino_nexys_a7 #(
       .acl_miso(acl_miso),
       .acl_mosi(acl_mosi),
       .acl_sclk(acl_sclk),
-      .acl_csn (acl_csn)
+      .acl_csn (acl_csn),
+
+      .ca(ca),
+      .cb(cb),
+      .cc(cc),
+      .cd(cd),
+      .ce(ce),
+      .cf(cf),
+      .cg(cg),
+      .an(an)
   );
 
 

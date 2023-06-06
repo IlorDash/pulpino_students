@@ -16,7 +16,6 @@ divider d (
 );
 
 //assign start = SW[0];
-
 parameter DATA_WIDTH = 8;
 
 logic [DATA_WIDTH-1:0] count;

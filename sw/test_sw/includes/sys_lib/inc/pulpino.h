@@ -39,6 +39,7 @@
 #define FLL_BASE_ADDR                 ( SOC_PERIPHERALS_BASE_ADDR + 0x6000 )
 #define SOC_CTRL_BASE_ADDR            ( SOC_PERIPHERALS_BASE_ADDR + 0x7000 )
 #define SPI_ACCEL_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x8000 )
+#define SEG7_CONTROL_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x9000 )
 
 /** STDOUT */
 #define STDOUT_BASE_ADDR              ( SOC_PERIPHERALS_BASE_ADDR + 0x10000 )
@@ -85,6 +86,8 @@
 #define CGFLL     0x07
 /** Clock gate SPI Accelerometer */
 #define CGSPI_ACCEL    0x08
+/** Clock gate 7 segment controller */
+#define CGSPI_SEG7_CONTROL   0x09
 
 /** Boot address register */
 #define BOOTREG     __PSC__(0x08)
