@@ -47,7 +47,7 @@ module aud_pwm_apb_wrapper (
   assign aud_start = &start_reg;
 
   logic aud_rstn;
-  assign aud_rstn = presetn_i && ~rst_reg[0];
+  assign aud_rstn = ~rst_reg[0];
 
   aud_pwm audpwm (
       .clk(pclk_i),
