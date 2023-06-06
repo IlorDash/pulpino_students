@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-module audpwm (
+module aud_pwm (
     input logic clk,
     output logic aud_pwm,
     input logic start,
