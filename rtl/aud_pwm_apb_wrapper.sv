@@ -100,12 +100,12 @@ module aud_pwm_apb_wrapper (
       pslverr_status <= PSEL_PREV;
     end
 
-    if (paddr_i > `DATA_READY) begin  // Register at the address doesn't exist
+    if (paddr_i > `RST) begin  // Register at the address doesn't exist
       pslverr_o <= 1;
       pslverr_status <= ADDRES;
     end
 
-    if ((paddr_i <= `RESET) && ~pwrite_i && psel_i) begin  // Read from write-only register
+    if ((paddr_i <= `RST) && ~pwrite_i && psel_i) begin  // Read from write-only register
       pslverr_o <= 1;
       pslverr_status <= WRITE_ONLY;
     end
