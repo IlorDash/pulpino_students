@@ -12,8 +12,8 @@
 
 // Four bits are specifies one digit num, so we need 32 bits for 8 digits 
 
-`define NUM_TO_DISP 32'h0000
-`define RESET 32'h0004
+`define NUM_TO_DISP 12'h0
+`define RESET 12'h4
 
 /*
  * AN - Anode
@@ -40,8 +40,8 @@ module seg7_apb_wrapper (
     input logic pwrite_i,
 
     // Write
-    input logic [3:0][7:0] pwdata_i,
-    input logic [3:0]      pstrb_i,
+    input logic [31:0] pwdata_i,
+    input logic [ 3:0] pstrb_i,
 
     // Slave
     output logic        pready_o,
@@ -70,17 +70,14 @@ module seg7_apb_wrapper (
   // 7-Segment control instantiation //
   /////////////////////////////////////
 
-  logic seg7_resetn;
-  assign seg7_resetn = ~reset_reg[0];
-
-  logic [`CATH_NUM-1:0] cath;
-  assign cath = {cg, cf, ce, cd, cc, cb, ca};
+  logic seg7_reset;
+  assign seg7_reset = reset_reg[0];
 
   seg7_control my_disp (
       .clk_i(pclk_i),
       .num(num_reg),
-      .rst(seg7_resetn),
-      .cath(cath),
+      .rst(seg7_reset),
+      .cath({cg, cf, ce, cd, cc, cb, ca}),
       .an(an)
   );
 
@@ -104,7 +101,7 @@ module seg7_apb_wrapper (
     MISALIGN = 8
   } pslverr_causes_t;
 
-  logic [2:0] pslverr_status;
+  pslverr_causes_t pslverr_status;
 
   always_comb begin
     pslverr_o <= 0;
@@ -132,10 +129,10 @@ module seg7_apb_wrapper (
       pslverr_status <= ADDRES;
     end
 
-    if ((paddr_i <= `RESET) && ~pwrite_i && psel_i) begin  // Read from write-only register
-      pslverr_o <= 1;
-      pslverr_status <= WRITE_ONLY;
-    end
+    // if ((paddr_i <= `RESET) && ~pwrite_i && psel_i) begin  // Read from write-only register
+    //   pslverr_o <= 1;
+    //   pslverr_status <= WRITE_ONLY;
+    // end
 
     if (paddr_i[1:0]) begin  // Misaligned address
       pslverr_o <= 1;
@@ -144,25 +141,21 @@ module seg7_apb_wrapper (
   end
 
   // WRITE REGS
-  always_ff @(posedge penable_i) begin
-    pslverr_o <= 0;
-    if (penable_i && pwrite_i) begin
-      case (paddr_i)
+  always_ff @(posedge pclk_i or negedge presetn_i) begin
+    if (~presetn_i) begin
+      num_reg   <= '0;
+      reset_reg <= '0;
+    end else if (psel_i && pwrite_i) begin
+      case (paddr_i[11:0])
         `NUM_TO_DISP: begin
-          num_reg[7:0]   <= pwdata_i[0];
-          num_reg[15:8]  <= pwdata_i[1];
-          num_reg[23:16] <= pwdata_i[2];
-          num_reg[31:24] <= pwdata_i[3];
+          num_reg <= pwdata_i;
         end
         `RESET: begin
-          reset_reg[7:0]   <= pwdata_i[0];
-          reset_reg[15:8]  <= pwdata_i[1];
-          reset_reg[23:16] <= pwdata_i[2];
-          reset_reg[31:24] <= pwdata_i[3];
+          reset_reg <= pwdata_i;
         end
         default: begin
-          num_reg <= 32'b0;
-          reset_reg   <= 32'b0;
+          num_reg   <= 32'b0;
+          reset_reg <= 32'b0;
         end
       endcase
     end
