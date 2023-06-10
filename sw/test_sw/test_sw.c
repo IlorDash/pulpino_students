@@ -210,13 +210,13 @@ struct spi_accel_real_data get_spi_accel_real_data(struct spi_accel_regs raw_dat
   char accel_data_uart[ACCEL_DATA_STR_LEN] = {0};
   uint8_t str_pos;
   raw_accel_data = (int16_t)(raw_data.data_x & 0xffff);
-  accel_data.x = raw_accel_data / (1000 / (RANGE / 2));
+  accel_data.x = raw_accel_data / (100 / (RANGE / 2));
 
   raw_accel_data = (int16_t)(raw_data.data_y & 0xffff);
-  accel_data.y = raw_accel_data / (1000 / (RANGE / 2));
+  accel_data.y = raw_accel_data / (100 / (RANGE / 2));
 
   raw_accel_data = (int16_t)(raw_data.data_z & 0xffff);
-  accel_data.z = raw_accel_data / (1000 / (RANGE / 2));
+  accel_data.z = raw_accel_data / (100 / (RANGE / 2));
   return accel_data;
 }
 
@@ -248,13 +248,14 @@ int main()
 {
   struct spi_accel_regs accel_data_regs;
   struct spi_accel_real_data accel_data;
+  uint16_t abs_accel_data[NUMS_TO_DISP_NUM] = {0};
   int ret;
 
   uint8_t data_uart_pos;
 
   uart_set_cfg(0, 325); // 9600 baud UART, no parity (50MHz CPU)
 
-  uart_send("Hello world YEA!\n", 17); // + "\n"
+  uart_send("Hello world!\n", 13); // + "\n"
   uart_wait_tx_done();
 
   set_pin_function(31, FUNC_GPIO);
@@ -273,8 +274,7 @@ int main()
   uart_send("Init Aud PWM\n", 13);
   uart_wait_tx_done();
 
-  int i = 0;
-  int8_t seg7_nums[NUMS_TO_DISP_NUM];
+  int8_t seg7_nums[NUMS_TO_DISP_NUM] = {0};
   int seg7_cntr = 0;
   char seg7_uart[SEG7_DATA_STR_LEN] = {0};
 
@@ -284,11 +284,10 @@ int main()
   uart_send("Playing music\n", 14);
   uart_wait_tx_done();
   aud_pwm_start();
-
   while (1)
   {
     set_gpio_pin_value(31, 1);
-    for (int j = 0; j < LED_DELAY; j++)
+    for (int i = 0; i < LED_DELAY; i++)
     {
 // wait some time
 #ifdef __riscv__
@@ -296,7 +295,7 @@ int main()
 #else
       asm volatile("l.nop");
 #endif
-      if (!(j % 100000))
+      if (!(i % 100000))
       {
         uart_send(".", 1);
         uart_wait_tx_done();
@@ -322,14 +321,20 @@ int main()
     seg7_nums[1] = accel_data.y;
     seg7_nums[2] = accel_data.z;
 
-    // if ((accel_data.x > 10))
-    // {
-    //   /* code */
-    // }
+    abs_accel_data[0] = (accel_data.x >= 0) ? accel_data.x : -accel_data.x;
+    abs_accel_data[1] = (accel_data.y >= 0) ? accel_data.y : -accel_data.y;
+    abs_accel_data[2] = (accel_data.z >= 0) ? accel_data.z : -accel_data.z;
 
-    // uart_send("Playing music\n", 14);
-    // uart_wait_tx_done();
-    // aud_pwm_start();
+    if (abs_accel_data[0] > 5)
+    {
+      uart_send("Playing music\n", 14);
+      uart_wait_tx_done();
+      aud_pwm_start();
+    }
+    else
+    {
+      aud_pwm_stop();
+    }
 
     uart_send("Segments octets ", 16);
     uart_wait_tx_done();
@@ -343,7 +348,5 @@ int main()
 
     uart_send("\n", 1);
     uart_wait_tx_done();
-
-    i++;
   }
 }
