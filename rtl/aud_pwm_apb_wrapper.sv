@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 
-`define START 32'h0000
-`define RST 32'h0004
+`define START 12'h0
+`define RST 12'h4
 
 
 module aud_pwm_apb_wrapper (
@@ -105,10 +105,10 @@ module aud_pwm_apb_wrapper (
       pslverr_status <= ADDRES;
     end
 
-    if ((paddr_i <= `RST) && ~pwrite_i && psel_i) begin  // Read from write-only register
-      pslverr_o <= 1;
-      pslverr_status <= WRITE_ONLY;
-    end
+    // if ((paddr_i <= `RST) && ~pwrite_i && psel_i) begin  // Read from write-only register
+    //   pslverr_o <= 1;
+    //   pslverr_status <= WRITE_ONLY;
+    // end
 
     if (paddr_i[1:0]) begin  // Misaligned address
       pslverr_o <= 1;
@@ -117,29 +117,24 @@ module aud_pwm_apb_wrapper (
   end
 
   // WRITE REGS
-  always_ff @(posedge penable_i) begin
-    pslverr_o <= 0;
-    if (penable_i && pwrite_i) begin
-      case (paddr_i)
+  always_ff @(posedge pclk_i or negedge presetn_i) begin
+    if (~presetn_i) begin
+      start_reg <= '0;
+      rst_reg   <= '0;
+    end else if (psel_i && pwrite_i) begin
+      case (paddr_i[11:0])
         `START: begin
-          start_reg[7:0]   <= pwdata_i[0];
-          start_reg[15:8]  <= pwdata_i[1];
-          start_reg[23:16] <= pwdata_i[2];
-          start_reg[31:24] <= pwdata_i[3];
+          start_reg <= pwdata_i;
         end
         `RST: begin
-          rst_reg[7:0]   <= pwdata_i[0];
-          rst_reg[15:8]  <= pwdata_i[1];
-          rst_reg[23:16] <= pwdata_i[2];
-          rst_reg[31:24] <= pwdata_i[3];
+          rst_reg <= pwdata_i;
         end
         default: begin
-          start_reg <= 32'b0;
-          rst_reg   <= 32'b0;
+          start_reg <= '0;
+          rst_reg   <= '0;
         end
       endcase
     end
   end
 
 endmodule
-
