@@ -6,12 +6,13 @@
 
 __attribute__((packed)) struct AUD_PWM_APB
 {
-    uint32_t START;   // 0x0
-    uint32_t RST; // 0x4
+    uint32_t START; // 0x0
+    uint32_t RST;   // 0x4
 };
 
 void aud_pwm_init(void);
 void aud_pwm_start();
+void aud_pwm_stop();
 void aud_pwm_reset();
 
 #endif
